@@ -1,4 +1,4 @@
-import { StepProps, Steps } from "@/app/page"
+import { StepProps } from "@/app/page"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -8,14 +8,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { InscritoType } from "@/types"
+import { InscritoType, Steps } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Check } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { Checkbox } from "../ui/checkbox"
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form"
 
 const FormSchema = z
     .object({

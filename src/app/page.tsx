@@ -1,14 +1,13 @@
 "use client"
 
-import Validacao from "@/components/steps/validacao"
-import Formulario from "@/components/steps/formulario"
-import { InscritoType } from "@/types"
-import Image from "next/image"
-import { Dispatch, SetStateAction, useState } from "react"
-import Termos from "@/components/steps/termos"
-import Parcelas from "@/components/steps/parcelas"
-import Pagamentos from "@/components/steps/pagamento"
 import Finalizacao from "@/components/steps/finalizacao"
+import Formulario from "@/components/steps/formulario"
+import Pagamentos from "@/components/steps/pagamento"
+import Parcelas from "@/components/steps/parcelas"
+import Termos from "@/components/steps/termos"
+import Validacao from "@/components/steps/validacao"
+import { InscritoType, Steps } from "@/types"
+import { Dispatch, SetStateAction, useState } from "react"
 
 export type StepProps = {
     step: number
@@ -16,15 +15,6 @@ export type StepProps = {
     setStep: Dispatch<SetStateAction<number>>
     setInscrito: Dispatch<SetStateAction<InscritoType | null>>
     reset: () => void
-}
-
-export const Steps = {
-    "VALIDACAO": 1,
-    "FORMULARIO": 2,
-    "TERMOS": 3,
-    "PARCELAS": 4,
-    "PAGAMENTO": 5,
-    "FINALIZACAO": 6
 }
 
 export default function LoginForm() {

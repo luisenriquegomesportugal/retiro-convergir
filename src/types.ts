@@ -22,6 +22,15 @@ export type InscritoType = {
   termos?: boolean
 }
 
+export const Steps = {
+  "VALIDACAO": 1,
+  "FORMULARIO": 2,
+  "TERMOS": 3,
+  "PARCELAS": 4,
+  "PAGAMENTO": 5,
+  "FINALIZACAO": 6
+}
+
 export type Pagamento = {
   parcelas: EventoPagamentosType[]
   tipo?: string

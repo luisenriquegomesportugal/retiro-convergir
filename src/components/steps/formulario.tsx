@@ -1,4 +1,4 @@
-import { StepProps, Steps } from "@/app/page"
+import { StepProps } from "@/app/page"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -9,7 +9,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { CelulaType, InscritoType } from "@/types"
+import { CelulaType, InscritoType, Steps } from "@/types"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { cpf as cpfValidation } from 'cpf-cnpj-validator'
 import { useForm } from "react-hook-form"

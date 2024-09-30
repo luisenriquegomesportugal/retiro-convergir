@@ -1,4 +1,4 @@
-import { StepProps, Steps } from "@/app/page"
+import { StepProps } from "@/app/page"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -8,7 +8,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { EventoPagamentosType, EventoType, InscritoType, Pagamento } from "@/types"
+import { EventoPagamentosType, EventoType, InscritoType, Steps } from "@/types"
 import { Check, Circle, Dot, Loader2 } from "lucide-react"
 import { useEffect, useState } from "react"
 

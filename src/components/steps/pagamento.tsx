@@ -1,4 +1,4 @@
-import { StepProps, Steps } from "@/app/page"
+import { StepProps } from "@/app/page"
 import { Button } from "@/components/ui/button"
 import {
     Card,
@@ -11,6 +11,7 @@ import {
 import { Check } from "lucide-react"
 import { useState } from "react"
 import { PagamentoModal } from "../modal"
+import { Steps } from "@/types"
 
 export default function Pagamentos({ setStep, inscrito, reset }: StepProps) {
     const [checkout, setCheckout] = useState<string>()
