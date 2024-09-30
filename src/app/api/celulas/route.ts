@@ -1,4 +1,4 @@
-import { database } from "@/firebase";
+import { database } from "@/configs/firebase";
 import { CelulaType } from "@/types";
 import { get, ref } from "firebase/database";
 

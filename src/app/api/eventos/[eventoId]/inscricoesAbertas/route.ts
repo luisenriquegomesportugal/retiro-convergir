@@ -1,4 +1,4 @@
-import { database } from "@/firebase";
+import { database } from "@/configs/firebase";
 import { get as getDatabase, ref as refDatabase } from "firebase/database";
 
 type ApiProps = {

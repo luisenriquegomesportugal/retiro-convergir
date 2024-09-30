@@ -18,13 +18,13 @@ export type StepProps = {
     reset: () => void
 }
 
-export enum Steps {
-    "VALIDACAO" = 1,
-    "FORMULARIO" = 2,
-    "TERMOS" = 3,
-    "PARCELAS" = 4,
-    "PAGAMENTO" = 5,
-    "FINALIZACAO" = 6
+export const Steps = {
+    "VALIDACAO": 1,
+    "FORMULARIO": 2,
+    "TERMOS": 3,
+    "PARCELAS": 4,
+    "PAGAMENTO": 5,
+    "FINALIZACAO": 6
 }
 
 export default function LoginForm() {

@@ -2,7 +2,7 @@
 import EfiPay from 'sdk-node-apis-efi'
 import efi from "@/configs/efi"
 
-import { database } from "@/firebase";
+import { database } from "@/configs/firebase";
 import { ref, set, get } from "firebase/database";
 import { ChargeReturn } from '@/types';
 

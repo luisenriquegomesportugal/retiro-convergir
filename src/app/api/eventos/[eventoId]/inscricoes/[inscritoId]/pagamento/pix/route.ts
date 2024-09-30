@@ -2,7 +2,7 @@
 import EfiPay from 'sdk-node-apis-efi'
 import efi from "@/configs/efi"
 
-import { database } from "@/firebase"
+import { database } from "@/configs/firebase"
 import { EventoPagamentosType, EventoType, InscritoType, PixCharge, PixChargeLoc } from "@/types"
 import { get, ref, remove, set } from "firebase/database"
 

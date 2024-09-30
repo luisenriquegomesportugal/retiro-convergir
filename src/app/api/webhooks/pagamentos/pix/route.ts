@@ -1,4 +1,4 @@
-import { database } from "@/firebase";
+import { database } from "@/configs/firebase";
 import { PixReturn } from "@/types";
 import { ref, set, get } from "firebase/database";
 

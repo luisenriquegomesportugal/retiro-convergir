@@ -1,4 +1,4 @@
-import { database } from "@/firebase"
+import { database } from "@/configs/firebase"
 import { Credenciamento } from "@/types"
 import { get, ref as refDatabase, set as setDatabase } from "firebase/database"
 
