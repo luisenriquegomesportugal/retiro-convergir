@@ -18,7 +18,7 @@ export type StepProps = {
 }
 
 export default function LoginForm() {
-    const [step, setStep] = useState<number>(Steps.FINALIZACAO)
+    const [step, setStep] = useState<number>(Steps.VALIDACAO)
     const [inscrito, setInscrito] = useState<InscritoType | null>(null)
 
     const reset = () => {
