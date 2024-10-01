@@ -17,7 +17,7 @@ type RootLayoutProps = Readonly<{
 export default async function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body className={cn('antialiased w-full min-h-screen flex items-center justify-center bg-[url(/bg-layout.jpg)] bg-no-repeat bg-full md:bg-cover p-6', inter.className)}>
+      <body className={cn('antialiased w-full min-h-screen flex items-center justify-center bg-[url(/bg-layout.jpg)] bg-cover p-6', inter.className)}>
         {children}
       </body>
     </html>

@@ -53,13 +53,7 @@ module.exports = {
   				'5': 'hsl(var(--chart-5))'
   			}
   		}
-  	},
-	  backgroundSize: {
-		'auto': 'auto',
-		'cover': 'cover',
-		'contain': 'contain',
-		'full': '100vw 100vh',
-	  }  
+  	}
   },
   plugins: [require("tailwindcss-animate")],
 }
