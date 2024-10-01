@@ -52,7 +52,7 @@ export default function Parcelas({ setStep, inscrito, setInscrito, reset }: Step
         })
     }
 
-    const parcelasPagas = Object.values(inscrito?.pagamentos!)
+    const parcelasPagas = Object.values(inscrito?.pagamentos || [])
         .reduce<number[]>((a, p) => {
             return ["CONCLUIDA", "paid"].includes(p.status!)
                 ? a.concat(p.parcelas.map(m => m.parcela))
