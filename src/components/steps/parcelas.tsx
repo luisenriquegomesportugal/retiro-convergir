@@ -74,7 +74,7 @@ export default function Parcelas({ setStep, inscrito, setInscrito, reset }: Step
                             variant={"ghost"}
                             onClick={() => selecionarParcela(pagamento)}
                             disabled={parcelasPagas?.includes(pagamento.parcela)}
-                            className={`border w-full h-full flex flex-col justify-start items-start px-4 py-2 space-y-2 ${parcelasPagas?.includes(pagamento.parcela) ? 'bg-green-200' : parcelasSelecionadas?.some(s => s.parcela == pagamento.parcela) ? 'bg-blue-200' : ''}`}>
+                            className={`border w-full h-full flex flex-col justify-start items-start px-4 py-2 space-y-2 hover:bg-blue-200 ${parcelasPagas?.includes(pagamento.parcela) ? 'bg-green-200' : parcelasSelecionadas?.some(s => s.parcela == pagamento.parcela) ? 'bg-blue-200' : ''}`}>
                             <h1 className="text-left text-lg font-semibold">{pagamento.parcela}ª parcela</h1>
                             <ul className="text-left text-xs font-light">
                                 <li><b>Pix:</b> {pagamento.valores['pix'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>
