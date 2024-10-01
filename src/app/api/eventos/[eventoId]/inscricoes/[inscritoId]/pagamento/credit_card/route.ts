@@ -6,6 +6,7 @@ import { database } from "@/configs/firebase"
 import { Charge, EventoPagamentosType, EventoType, InscritoType } from "@/types"
 import { get, push, ref, remove, set } from "firebase/database"
 import { v4 } from "uuid"
+import { cancelarTransacoesEmAberto } from '@/lib/cancelar-transacoes'
 
 type ApiProps = {
     params: {
@@ -22,8 +23,6 @@ export async function POST(request: Request, { params }: ApiProps) {
             throw "O campo parcelas é obrigatório"
         }
 
-        const efipay = new EfiPay(efi)
-
         const refInscrito = ref(database, `eventos/${params.eventoId}/inscricoes/${params.inscritoId}`)
         const snapshotInscrito = await get(refInscrito);
         const inscrito = snapshotInscrito.val() as InscritoType
@@ -31,6 +30,10 @@ export async function POST(request: Request, { params }: ApiProps) {
         const refEvento = ref(database, `eventos/${params.eventoId}`)
         const snapshotEvento = await get(refEvento);
         const evento = snapshotEvento.val() as EventoType
+
+        await cancelarTransacoesEmAberto(evento, inscrito)
+
+        const efipay = new EfiPay(efi)
 
         const txid = v4()
         const valor = pagamentos.reduce((a, p) => a + p.valores['credit_card'], 0)

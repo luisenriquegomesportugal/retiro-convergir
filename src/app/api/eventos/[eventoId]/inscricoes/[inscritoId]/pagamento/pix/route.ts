@@ -5,6 +5,7 @@ import efi from "@/configs/efi"
 import { database } from "@/configs/firebase"
 import { EventoPagamentosType, EventoType, InscritoType, PixCharge, PixChargeLoc } from "@/types"
 import { get, ref, remove, set } from "firebase/database"
+import { cancelarTransacoesEmAberto } from '@/lib/cancelar-transacoes'
 
 type ApiProps = {
     params: {
@@ -21,8 +22,6 @@ export async function POST(request: Request, { params }: ApiProps) {
             throw "O campo parcelas é obrigatório"
         }
 
-        const efipay = new EfiPay(efi)
-
         const refInscrito = ref(database, `eventos/${params.eventoId}/inscricoes/${params.inscritoId}`)
         const snapshotInscrito = await get(refInscrito);
         const inscrito = snapshotInscrito.val() as InscritoType
@@ -30,6 +29,10 @@ export async function POST(request: Request, { params }: ApiProps) {
         const refEvento = ref(database, `eventos/${params.eventoId}`)
         const snapshotEvento = await get(refEvento);
         const evento = snapshotEvento.val() as EventoType
+
+        await cancelarTransacoesEmAberto(evento, inscrito)
+
+        const efipay = new EfiPay(efi)
 
         const valor = pagamentos.reduce((a, p) => a + p.valores['pix'], 0)
 
