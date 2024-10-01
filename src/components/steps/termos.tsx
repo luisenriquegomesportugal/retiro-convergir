@@ -114,7 +114,7 @@ export default function Termos({ setStep, inscrito, setInscrito, reset }: StepPr
                         icon={<Check className="size-4 mr-2" />}
                         loading={form.formState.isSubmitting}
                         type="submit"
-                        className="w-full bg-[#feef00] hover:bg-[#fdaf00] text-black">
+                        className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">
                         Avançar
                     </Button>
                     <a href="#" className="text-sm" onClick={() => inscrito?.novo ? setStep(s => --s) : reset()}>

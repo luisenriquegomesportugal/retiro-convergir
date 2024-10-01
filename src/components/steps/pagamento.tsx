@@ -125,7 +125,7 @@ export default function Pagamentos({ setStep, inscrito, reset }: StepProps) {
                     loading={loading}
                     icon={<Check className="size-4 mr-2" />}
                     onClick={onSubmit}
-                    className="w-full bg-[#feef00] hover:bg-[#fdaf00] text-black">
+                    className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">
                     Pagar
                 </Button>
                 <a href="#" className="text-sm" onClick={() => setStep(s => --s)}>

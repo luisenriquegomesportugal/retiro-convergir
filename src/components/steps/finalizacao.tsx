@@ -29,7 +29,7 @@ export default function Finalizacao({ inscrito, reset }: StepProps) {
             <Button
                 icon={<Plus className="size-4 mr-2" />}
                 onClick={reset}
-                className="w-full bg-[#feef00] hover:bg-[#fdaf00] text-black">
+                className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">
                 Nova Inscrição
             </Button>
         </CardFooter>

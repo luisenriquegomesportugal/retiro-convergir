@@ -93,7 +93,7 @@ export default function Formulario({ setStep, inscrito, setInscrito }: StepProps
                     icon={<Check className="size-4 mr-2" />} 
                     loading={form.formState.isSubmitting} 
                     type="submit" 
-                    className="w-full bg-[#feef00] hover:bg-[#fdaf00] text-black">
+                    className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">
                         Avançar
                     </Button>
                 </CardFooter>
