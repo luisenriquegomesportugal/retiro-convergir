@@ -7,7 +7,7 @@ export async function POST(request: Request) {
         const webhookResponse = new Response(request.body);
         const data = await webhookResponse.json() as { pix: PixReturn[] }
 
-        for (let pixReturn of data.pix) {
+        for (let pixReturn of data.pix || []) {
             const refeventosPagamentos = ref(database, `eventosPagamentos/${pixReturn.txid}`)
             const snapshotPagamento = await get(refeventosPagamentos)
 
