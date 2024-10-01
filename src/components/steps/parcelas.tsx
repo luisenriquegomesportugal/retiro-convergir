@@ -68,7 +68,7 @@ export default function Parcelas({ setStep, inscrito, setInscrito, reset }: Step
             {
                 loading
                     ? <Loader2 className="size-4 animate-spin justify-self-center self-center" />
-                    : <div className="grid gap-2 grid-cols-1 lg:grid-cols-2">
+                    : <div className="grid gap-2 grid-cols-2">
                         {evento?.pagamentos.map(pagamento => <Button
                             key={pagamento.parcela}
                             variant={"ghost"}
