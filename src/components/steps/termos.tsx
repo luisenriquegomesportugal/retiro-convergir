@@ -117,7 +117,7 @@ export default function Termos({ setStep, inscrito, setInscrito, reset }: StepPr
                         className="w-full bg-[#feef00] hover:bg-[#fdaf00] text-black">
                         Avançar
                     </Button>
-                    <a href="#" className="text-sm" onClick={() => setStep(s => --s)}>
+                    <a href="#" className="text-sm" onClick={() => inscrito?.novo ? setStep(s => --s) : reset()}>
                         Voltar
                     </a>
                 </CardFooter>

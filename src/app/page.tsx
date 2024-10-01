@@ -1,16 +1,21 @@
 "use client"
 
+import Carregando from "@/components/carregando"
+import Fechada from "@/components/fechada"
 import Finalizacao from "@/components/steps/finalizacao"
 import Formulario from "@/components/steps/formulario"
 import Pagamentos from "@/components/steps/pagamento"
 import Parcelas from "@/components/steps/parcelas"
 import Termos from "@/components/steps/termos"
 import Validacao from "@/components/steps/validacao"
-import { InscritoType, Steps } from "@/types"
-import { Dispatch, SetStateAction, useState } from "react"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { EventoType, InscritoType, Steps } from "@/types"
+import { Loader2 } from "lucide-react"
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 
 export type StepProps = {
     step: number
+    evento: EventoType | null
     inscrito: InscritoType | null
     setStep: Dispatch<SetStateAction<number>>
     setInscrito: Dispatch<SetStateAction<InscritoType | null>>
@@ -18,8 +23,20 @@ export type StepProps = {
 }
 
 export default function LoginForm() {
-    const [step, setStep] = useState<number>(Steps.VALIDACAO)
+    const [loading, setLoading] = useState(true)
+    const [evento, setEvento] = useState<EventoType | null>(null)
     const [inscrito, setInscrito] = useState<InscritoType | null>(null)
+    const [step, setStep] = useState<number>(Steps.VALIDACAO)
+
+    useEffect(() => {
+        (async () => {
+            const response = await fetch(`/api/eventos/retiroconvergir2025`)
+            const data = await response.json() as { evento: EventoType }
+
+            setEvento(data.evento)
+            setLoading(false)
+        })();
+    }, [])
 
     const reset = () => {
         setStep(Steps.VALIDACAO)
@@ -32,12 +49,14 @@ export default function LoginForm() {
         </div>
         <div className="flex flex-1 items-center justify-center">
             {
-                step === Steps.VALIDACAO && <Validacao step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
-                || step === Steps.FORMULARIO && <Formulario step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
-                || step === Steps.TERMOS && <Termos step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
-                || step === Steps.PARCELAS && <Parcelas step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
-                || step === Steps.PAGAMENTO && <Pagamentos step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
-                || step === Steps.FINALIZACAO && <Finalizacao step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
+                loading && <Carregando />
+                || !evento || !evento.inscricoesAbertas && <Fechada />
+                || step === Steps.VALIDACAO && <Validacao evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
+                || step === Steps.FORMULARIO && <Formulario evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
+                || step === Steps.TERMOS && <Termos evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
+                || step === Steps.PARCELAS && <Parcelas evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
+                || step === Steps.PAGAMENTO && <Pagamentos evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
+                || step === Steps.FINALIZACAO && <Finalizacao evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
             }
         </div>
     </div>

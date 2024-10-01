@@ -8,24 +8,13 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { EventoPagamentosType, EventoType, InscritoType, Steps } from "@/types"
-import { Check, Circle, Dot, Loader2 } from "lucide-react"
-import { useEffect, useState } from "react"
+import { EventoPagamentosType, InscritoType, Steps } from "@/types"
+import { Check, Circle, Dot } from "lucide-react"
+import { useState } from "react"
+import { Checkbox } from "../ui/checkbox"
 
-export default function Parcelas({ setStep, inscrito, setInscrito, reset }: StepProps) {
-    const [evento, setEvento] = useState<EventoType>()
-    const [loading, setLoading] = useState(true)
+export default function Parcelas({ setStep, inscrito, setInscrito, evento }: StepProps) {
     const [parcelasSelecionadas, setParcelasSelecionadas] = useState<EventoPagamentosType[]>(inscrito?.pagamentosAFazer || [])
-
-    useEffect(() => {
-        (async () => {
-            const response = await fetch(`/api/eventos/retiroconvergir2025`)
-            const data = await response.json() as { evento: EventoType }
-
-            setEvento(data.evento)
-            setLoading(false)
-        })();
-    }, [])
 
     async function onSubmit() {
         if (!parcelasSelecionadas.length) {
@@ -65,25 +54,24 @@ export default function Parcelas({ setStep, inscrito, setInscrito, reset }: Step
             <CardDescription>Selecione as parcelas que deseja pagar</CardDescription>
         </CardHeader>
         <CardContent className="flex flex-col space-y-4">
-            {
-                loading
-                    ? <Loader2 className="size-4 animate-spin justify-self-center self-center" />
-                    : <div className="grid gap-2 grid-cols-2">
-                        {evento?.pagamentos.map(pagamento => <Button
-                            key={pagamento.parcela}
-                            variant={"ghost"}
-                            onClick={() => selecionarParcela(pagamento)}
-                            disabled={parcelasPagas?.includes(pagamento.parcela)}
-                            className={`border w-full h-full flex flex-col justify-start items-start px-4 py-2 space-y-2 hover:bg-blue-200 ${parcelasPagas?.includes(pagamento.parcela) ? 'bg-green-200' : parcelasSelecionadas?.some(s => s.parcela == pagamento.parcela) ? 'bg-blue-200' : ''}`}>
-                            <h1 className="text-left text-lg font-semibold">{pagamento.parcela}ª parcela</h1>
-                            <ul className="text-left text-xs font-light">
-                                <li><b>Pix:</b> {pagamento.valores['pix'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>
-                                <li><b>Crédito:</b> {pagamento.valores['credit_card'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>
-                            </ul>
-                        </Button>)
-                        }
-                    </div>
-            }
+            <div className="grid gap-2 grid-cols-2">
+                {evento?.pagamentos.map(pagamento => <label
+                    key={pagamento.parcela}
+                    htmlFor={`parcela_${pagamento.parcela}`}
+                    className={`cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70 border rounded-sm w-full h-full flex flex-col space-x-2 px-4 py-3 ${parcelasPagas?.includes(pagamento.parcela) ? 'bg-green-200' : parcelasSelecionadas?.some(s => s.parcela == pagamento.parcela) ? 'bg-blue-200' : ''}`}>
+                    <Checkbox
+                        id={`parcela_${pagamento.parcela}`}
+                        className="hidden"
+                        disabled={parcelasPagas?.includes(pagamento.parcela)}
+                        onClick={() => selecionarParcela(pagamento)} />
+                    <h1 className="text-left text-lg font-semibold">{pagamento.parcela}ª parcela</h1>
+                    <ul className="text-left text-xs font-light">
+                        <li><b>Pix:</b> {pagamento.valores['pix'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>
+                        <li><b>Crédito:</b> {pagamento.valores['credit_card'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>
+                    </ul>
+                </label>)
+                }
+            </div>
             <div className="flex flex-row space-x-4 text-sm">
                 <div className="flex flex-row items-center">
                     <Dot className="size-10 text-green-400" />
