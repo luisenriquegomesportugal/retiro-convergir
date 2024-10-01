@@ -64,8 +64,8 @@ export async function POST(request: Request, { params }: ApiProps) {
             status: charge.status,
             txid: charge.txid,
             url: visualization.linkVisualizacao,
-            criadoEm: charge.calendario.criacao,
-            expiraEm: new Date(new Date(charge.calendario.criacao).getTime() + charge.calendario.expiracao),
+            criadoEm: new Date(charge.calendario.criacao).toString(),
+            expiraEm: new Date(Date.now() + 60 * 60 * 24).toString(),
             parcelas: pagamentos
         })
 
