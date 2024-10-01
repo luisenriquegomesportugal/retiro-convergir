@@ -35,7 +35,7 @@ export async function POST(request: Request, { params }: ApiProps) {
 
         let charge = await efipay.pixCreateImmediateCharge({}, {
             "calendario": {
-                "expiracao": 1000 * 60 * 60 * 24
+                "expiracao": 60 * 60 * 24
             },
             "devedor": {
                 "cpf": inscrito.cpf,
