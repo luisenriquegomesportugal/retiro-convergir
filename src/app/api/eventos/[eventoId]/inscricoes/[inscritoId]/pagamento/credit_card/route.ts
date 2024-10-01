@@ -44,7 +44,7 @@ export async function POST(request: Request, { params }: ApiProps) {
                 })),
                 metadata: {
                     custom_id: txid,
-                    notification_url: `https://retiroconvergir.com.br/api/webhooks/pagamentos/credit_card/${txid}`
+                    notification_url: `${process.env.DOMAIN_URL}/api/webhooks/pagamentos/credit_card/${txid}`
                 },
                 customer: {
                     email: inscrito.email
