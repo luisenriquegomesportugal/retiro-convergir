@@ -10,7 +10,7 @@ type ApiProps = {
 }
 
 export async function GET(_: Request, { params }: ApiProps) {
-    const refPagamentoStatus = ref(database, `eventos/${params.eventoId}/inscricoes/${params.inscritoId}/pagamento/${params.txid}/status`)
+    const refPagamentoStatus = ref(database, `eventos/${params.eventoId}/inscricoes/${params.inscritoId}/pagamentos/${params.txid}/status`)
     const snapshotInscrito = await get(refPagamentoStatus);
     const status = snapshotInscrito.val() as string
 
