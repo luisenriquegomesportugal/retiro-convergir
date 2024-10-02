@@ -17,7 +17,7 @@ export default function Finalizacao({ inscrito, reset }: StepProps) {
                 <CheckCircle size={42} className="text-green-600" />
                 <div className="flex-1">
                     <CardTitle>Pagamento realizado com sucesso</CardTitle>
-                    <CardDescription>Parcela(as) paga</CardDescription>
+                    <CardDescription>{inscrito?.pagamentosAFazer?.length == 1 ? 'Parcela paga' : 'Parcelas pagas'}</CardDescription>
                 </div>
             </div>
         </CardHeader>
