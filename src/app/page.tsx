@@ -43,15 +43,21 @@ export default function LoginForm() {
         setInscrito(null)
     }
 
+    if (loading) {
+        return <Carregando />
+    }
+
+    if (!evento || !evento.inscricoesAbertas) {
+        return <Fechada />
+    }
+
     return (<div className="w-full flex flex-col lg:flex-row items-center justify-around">
         <div className="flex flex-1 items-center justify-center">
             <img src={"/Logo-white.png"} alt="Logo do retiro" className="self-center w-40 md:w-60 lg:w-80 mb-6" />
         </div>
         <div className="flex flex-1 items-center justify-center">
             {
-                loading && <Carregando />
-                || !evento || !evento.inscricoesAbertas && <Fechada />
-                || step === Steps.VALIDACAO && <Validacao evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
+                step === Steps.VALIDACAO && <Validacao evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
                 || step === Steps.FORMULARIO && <Formulario evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
                 || step === Steps.TERMOS && <Termos evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
                 || step === Steps.PARCELAS && <Parcelas evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />

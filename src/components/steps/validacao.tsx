@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
 import { Check } from "lucide-react"
+import { useState } from "react"
 
 const FormSchema = z
     .object({
@@ -29,15 +30,21 @@ const FormSchema = z
     })
 
 export default function Formulario({ setStep, inscrito, setInscrito }: StepProps) {
+    const [loading, setLoading] = useState(false)
+
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: { cpf: "" }
     })
 
     async function onSubmit({ cpf }: z.infer<typeof FormSchema>) {
+        setLoading(true)
+
         try {
             const response = await fetch(`/api/eventos/retiroconvergir2025/inscricoes/${cpf}`)
             const { inscrito } = await response.json() as { inscrito: InscritoType }
+
+            setLoading(false)
 
             if (inscrito) {
                 setInscrito(inscrito)
@@ -57,10 +64,10 @@ export default function Formulario({ setStep, inscrito, setInscrito }: StepProps
                 })
                 setStep(Steps.FORMULARIO)
             }
-
-            return true
         }
         catch (e) {
+            setLoading(false)
+
             alert("Falha ao validar o inscrito")
         }
     }
@@ -91,7 +98,7 @@ export default function Formulario({ setStep, inscrito, setInscrito }: StepProps
                 <CardFooter>
                     <Button 
                     icon={<Check className="size-4 mr-2" />} 
-                    loading={form.formState.isSubmitting} 
+                    loading={loading} 
                     type="submit" 
                     className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">
                         Avançar
