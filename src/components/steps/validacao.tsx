@@ -30,22 +30,18 @@ const FormSchema = z
     })
 
 export default function Formulario({ setStep, inscrito, setInscrito }: StepProps) {
-    const [loading, setLoading] = useState(false)
-
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: { cpf: "" }
     })
 
     async function onSubmit({ cpf }: z.infer<typeof FormSchema>) {
-        setLoading(true)
 
         try {
             const response = await fetch(`/api/eventos/retiroconvergir2025/inscricoes/${cpf}`)
             const { inscrito } = await response.json() as { inscrito: InscritoType }
 
             setInscrito(inscrito)
-            setLoading(false)
             
             if (inscrito?.novo) {
                 setStep(Steps.FORMULARIO)
@@ -54,10 +50,10 @@ export default function Formulario({ setStep, inscrito, setInscrito }: StepProps
             } else {
                 setStep(Steps.TERMOS)
             }
+
+            return true
         }
         catch (e) {
-            setLoading(false)
-
             alert("Falha ao validar o inscrito")
         }
     }
@@ -87,9 +83,9 @@ export default function Formulario({ setStep, inscrito, setInscrito }: StepProps
                 </CardContent>
                 <CardFooter>
                     <Button
+                        type="submit"                        
                         icon={<Check className="size-4 mr-2" />}
-                        loading={loading}
-                        type="submit"
+                        disabled={form.formState.isSubmitting}
                         className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">
                         Avançar
                     </Button>

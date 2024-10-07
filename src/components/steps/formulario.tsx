@@ -213,9 +213,9 @@ export default function Validacao({ setStep, inscrito, setInscrito, reset }: Ste
                 </CardContent>
                 <CardFooter className="flex flex-col gap-4">
                     <Button
-                        icon={<Check className="size-4 mr-2" />}
-                        loading={form.formState.isSubmitting}
+                        disabled={form.formState.isSubmitting}
                         type="submit"
+                        icon={<Check className="size-4 mr-2" />}
                         className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">
                         Avançar
                     </Button>

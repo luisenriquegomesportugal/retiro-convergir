@@ -122,7 +122,7 @@ export default function Pagamentos({ setStep, inscrito, reset }: StepProps) {
             </CardContent>
             <CardFooter className="flex flex-col gap-4">
                 <Button
-                    loading={loading}
+                    disabled={loading}
                     icon={<Check className="size-4 mr-2" />}
                     onClick={onSubmit}
                     className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">
