@@ -112,7 +112,6 @@ export default function Termos({ setStep, inscrito, setInscrito, reset }: StepPr
                 <CardFooter className="flex flex-col gap-4">
                     <Button
                         icon={<Check className="size-4 mr-2" />}
-                        loading={form.formState.isSubmitting}
                         type="submit"
                         className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">
                         Avançar
