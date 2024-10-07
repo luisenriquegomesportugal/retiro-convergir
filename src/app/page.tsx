@@ -15,17 +15,17 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react"
 
 export type StepProps = {
     step: number
-    evento: EventoType | null
-    inscrito: InscritoType | null
+    evento?: EventoType
+    inscrito?: InscritoType
     setStep: Dispatch<SetStateAction<number>>
-    setInscrito: Dispatch<SetStateAction<InscritoType | null>>
+    setInscrito: Dispatch<SetStateAction<InscritoType | undefined>>
     reset: () => void
 }
 
 export default function LoginForm() {
     const [loading, setLoading] = useState(true)
-    const [evento, setEvento] = useState<EventoType | null>(null)
-    const [inscrito, setInscrito] = useState<InscritoType | null>(null)
+    const [evento, setEvento] = useState<EventoType>()
+    const [inscrito, setInscrito] = useState<InscritoType>()
     const [step, setStep] = useState<number>(Steps.VALIDACAO)
 
     useEffect(() => {
@@ -40,7 +40,7 @@ export default function LoginForm() {
 
     const reset = () => {
         setStep(Steps.VALIDACAO)
-        setInscrito(null)
+        setInscrito(undefined)
     }
 
     if (loading) {

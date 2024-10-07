@@ -44,25 +44,15 @@ export default function Formulario({ setStep, inscrito, setInscrito }: StepProps
             const response = await fetch(`/api/eventos/retiroconvergir2025/inscricoes/${cpf}`)
             const { inscrito } = await response.json() as { inscrito: InscritoType }
 
+            setInscrito(inscrito)
             setLoading(false)
-
-            if (inscrito) {
-                setInscrito(inscrito)
-                
-                if (inscrito.finalizada) {
-                    setStep(Steps.FINALIZACAO)
-                } else if (inscrito.novo) {
-                    setStep(Steps.FORMULARIO)
-                } else if (!inscrito.termos) {
-                    setStep(Steps.TERMOS)
-                } else {
-                    setStep(Steps.PARCELAS)
-                }
-            } else {
-                setInscrito({
-                    cpf
-                })
+            
+            if (inscrito?.novo) {
                 setStep(Steps.FORMULARIO)
+            } else if (inscrito?.finalizada) {
+                setStep(Steps.FINALIZACAO)
+            } else {
+                setStep(Steps.TERMOS)
             }
         }
         catch (e) {
@@ -96,11 +86,11 @@ export default function Formulario({ setStep, inscrito, setInscrito }: StepProps
                     />
                 </CardContent>
                 <CardFooter>
-                    <Button 
-                    icon={<Check className="size-4 mr-2" />} 
-                    loading={loading} 
-                    type="submit" 
-                    className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">
+                    <Button
+                        icon={<Check className="size-4 mr-2" />}
+                        loading={loading}
+                        type="submit"
+                        className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">
                         Avançar
                     </Button>
                 </CardFooter>
