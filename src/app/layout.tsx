@@ -11,7 +11,10 @@ export const metadata: Metadata = {
   description: "Isto é, de fazer convergir em Cristo todas as coisas nos céus e na terra, na administração da plenitude dos tempos. Efésios 1:10",
   openGraph: {
     images: "/Logo.png"
-  }  
+  },
+  other: {
+    google: "notranslate"
+  }
 };
 
 type RootLayoutProps = Readonly<{
