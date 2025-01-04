@@ -8,5 +8,5 @@ export async function GET() {
 
     const celulas = snapshotCelulas.val() as CelulaType[]
 
-    return Response.json({ celulas: celulas.filter(c => ["Rede 12", "Rede 17"].includes(c.rede)) })
+    return Response.json({ celulas: celulas.filter(c => ["Rede 12", "Rede 17", "Rede 20"].includes(c.rede)) })
 }
