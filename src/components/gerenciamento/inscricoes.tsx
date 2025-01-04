@@ -17,7 +17,7 @@ import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/p
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { cn, getPagamentoInscrito, getPagamentosInscrito } from "@/lib/utils"
-import { CelulaType, EventoType, InscritoType } from "@/types"
+import { CelulaType, EventoType, InscritoType, Pagamento } from "@/types"
 import { Check, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Copy, DollarSign, MoreVertical, Search, Tag, User, Users } from "lucide-react"
 import { parseAsArrayOf, parseAsInteger, parseAsString, queryTypes, SetValues, useQueryState, UseQueryStateReturn, UseQueryStatesReturn } from "nuqs"
 import { toast } from "sonner"
@@ -34,7 +34,7 @@ type Props = {
 }
 
 const getStatusPagamento = (inscrito: InscritoType) => {
-  if (!inscrito.pagamentos) {
+  if (!inscrito.pagamentos || !Object.values(inscrito.pagamentos).some(pagamento => ["paid", "CONCLUIDA"].includes(pagamento.status!))) {
     return "Cadastrado"
   }
 
@@ -54,24 +54,18 @@ const getPagamentos = (inscrito: InscritoType) => {
     .filter(pagamento => {
       return ["paid", "CONCLUIDA"].includes(pagamento.status!)
     })
-    .map(pagamento => {
-      pagamento.tipo = parseTipoPagamento(pagamento.tipo!)
-
-      return pagamento
-    })
-
+    
   return tipoPagamento
 }
 
-const parseTipoPagamento = (tipoPagamento: string) => !tipoPagamento
-  ? '-'
-  : tipoPagamento === "credit_card"
-    ? "Cartão de crédito"
-    : tipoPagamento === "pix"
-      ? "Pix"
-      : tipoPagamento === "money"
-        ? "Dinheiro"
-        : "Presencial"
+const parseTipoPagamento = (inscrito: InscritoType) => {
+  if (!inscrito.pagamentos || !Object.values(inscrito.pagamentos).some(pagamento => ["paid", "CONCLUIDA"].includes(pagamento.status!))) {
+    return ["Cadastrado"]
+  }
+
+  return getPagamentos(inscrito)
+    .reduce<string[]>((a, p) => a.concat(p.parcelas.map(pa => `${pa.parcela}ª parcela`)), [])
+}
 
 const handleOnFilterClick = (setFn: any, value: string) => {
   setFn((old: string[] | null) => {
@@ -89,14 +83,12 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
   const [filterGlobal, setFilterGlobal] = useQueryState("fif")
   const [rede, setRede] = useQueryState("fir", parseAsArrayOf(parseAsString))
   const [celula, setCelula] = useQueryState("fic", parseAsArrayOf(parseAsString))
-  const [situacao, setSituacao] = useQueryState("fis", parseAsArrayOf(parseAsString))
-  const [tipoPagamento, setTipoPagamento] = useQueryState("fit", parseAsArrayOf(parseAsString))
+  const [tipoPagamento, setTipoPagamento] = useQueryState("fipa", parseAsArrayOf(parseAsString))
 
   let inscricoesFiltradas = inscricoes
   inscricoesFiltradas = inscricoesFiltradas.filter(f => !rede ? true : rede!.includes(f.rede!))
   inscricoesFiltradas = inscricoesFiltradas.filter(f => !celula ? true : celula.includes("Convidado") ? !f.celula : celula!.includes(f.celula!))
-  inscricoesFiltradas = inscricoesFiltradas.filter(f => !situacao ? true : situacao!.includes(getStatusPagamento(f)))
-  inscricoesFiltradas = inscricoesFiltradas.filter(f => !tipoPagamento ? true : tipoPagamento?.includes(getPagamentoInscrito(f)?.tipo!))
+  inscricoesFiltradas = inscricoesFiltradas.filter(f => !tipoPagamento ? true : tipoPagamento?.every(item => parseTipoPagamento(f).includes(item)))
   inscricoesFiltradas = inscricoesFiltradas.filter(f => {
     if (!filterGlobal) {
       return true
@@ -360,7 +352,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                   </CommandList>
                 </Command>
               </PopoverContent>
-            </Popover>
+            </Popover> */}
             <Popover>
               <PopoverTrigger asChild>
                 <Button
@@ -370,8 +362,8 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                   <DollarSign className="h-3.5 w-3.5" />
                   <span className="hidden xl:block w-full max-w-[150px] truncate">{
                     !tipoPagamento?.length
-                      ? "Todos os pagamentos"
-                      : tipoPagamento.map(t => parseTipoPagamento(t)).join(', ')
+                      ? "Todas as parcelas"
+                      : tipoPagamento.join(', ')
                   }</span>
                   {tipoPagamento?.length && <span className="absolute bg-red-500 rounded-full size-[8px] top-[10px] right-[10px] md:hidden" />}
                 </Button>
@@ -393,58 +385,106 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                         Todos os pagamentos
                       </CommandItem>
                       <CommandItem className="cursor-pointer" onSelect={() => {
-                        handleOnFilterClick(setTipoPagamento, "credit_card")
+                        handleOnFilterClick(setTipoPagamento, "Cadastrado")
                         setPage(1)
                       }}>
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            tipoPagamento?.includes("credit_card") ? "opacity-100" : "opacity-0"
+                            tipoPagamento?.includes("Cadastrado") ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        Cartão de crédito
+                        Cadastrado
                       </CommandItem>
                       <CommandItem className="cursor-pointer" onSelect={() => {
-                        handleOnFilterClick(setTipoPagamento, "pix")
+                        handleOnFilterClick(setTipoPagamento, "1ª parcela")
                         setPage(1)
                       }}>
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            tipoPagamento?.includes("pix") ? "opacity-100" : "opacity-0"
+                            tipoPagamento?.includes("1ª parcela") ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        Pix
+                        1ª parcela
                       </CommandItem>
                       <CommandItem className="cursor-pointer" onSelect={() => {
-                        handleOnFilterClick(setTipoPagamento, "money")
+                        handleOnFilterClick(setTipoPagamento, "2ª parcela")
                         setPage(1)
                       }}>
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            tipoPagamento?.includes("money") ? "opacity-100" : "opacity-0"
+                            tipoPagamento?.includes("2ª parcela") ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        Dinheiro
+                        2ª parcela
                       </CommandItem>
                       <CommandItem className="cursor-pointer" onSelect={() => {
-                        handleOnFilterClick(setTipoPagamento, "presencial")
+                        handleOnFilterClick(setTipoPagamento, "3ª parcela")
                         setPage(1)
                       }}>
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            tipoPagamento?.includes("presencial") ? "opacity-100" : "opacity-0"
+                            tipoPagamento?.includes("3ª parcela") ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        Presencial
+                        3ª parcela
+                      </CommandItem>
+                      <CommandItem className="cursor-pointer" onSelect={() => {
+                        handleOnFilterClick(setTipoPagamento, "4ª parcela")
+                        setPage(1)
+                      }}>
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            tipoPagamento?.includes("4ª parcela") ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        4ª parcela
+                      </CommandItem>
+                      <CommandItem className="cursor-pointer" onSelect={() => {
+                        handleOnFilterClick(setTipoPagamento, "5ª parcela")
+                        setPage(1)
+                      }}>
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            tipoPagamento?.includes("5ª parcela") ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        5ª parcela
+                      </CommandItem>
+                      <CommandItem className="cursor-pointer" onSelect={() => {
+                        handleOnFilterClick(setTipoPagamento, "6ª parcela")
+                        setPage(1)
+                      }}>
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            tipoPagamento?.includes("6ª parcela") ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        6ª parcela
+                      </CommandItem>
+                      <CommandItem className="cursor-pointer" onSelect={() => {
+                        handleOnFilterClick(setTipoPagamento, "7ª parcela")
+                        setPage(1)
+                      }}>
+                        <Check
+                          className={cn(
+                            "mr-2 h-4 w-4",
+                            tipoPagamento?.includes("7ª parcela") ? "opacity-100" : "opacity-0"
+                          )}
+                        />
+                        7ª parcela
                       </CommandItem>
                     </CommandGroup>
                   </CommandList>
                 </Command>
               </PopoverContent>
-            </Popover> */}
+            </Popover>
             <Button
               variant="outline"
               className="gap-1 text-sm"
@@ -506,7 +546,11 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                   </TableCell>
                   <TableCell>
                     {
-                      getStatusPagamento(inscrito)
+                      getStatusPagamento(inscrito) == "Cadastrado"
+                      ? <Badge className="bg-yellow-500 hover:bg-yellow-400">Cadastrado</Badge> 
+                      : getStatusPagamento(inscrito) == "1ª, 2ª, 3ª, 4ª, 5ª, 6ª, 7ª pagas" 
+                      ? <Badge className="bg-green-600 hover:bg-green-500">{getStatusPagamento(inscrito)}</Badge>
+                      : <Badge className="bg-indigo-500 hover:bg-indigo-400">{getStatusPagamento(inscrito)}</Badge>
                     }
                   </TableCell>
                   <TableCell className="text-right flex space-x-2">
