@@ -277,7 +277,7 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
                         (
                           !rede
                             ? celulas
-                            : celulas.filter(f => rede?.includes(`Rede ${f.rede}`))
+                            : celulas.filter(f => rede?.includes(f.rede))
                         ).map(s => <CommandItem className="cursor-pointer" key={`Rede ${s.celula}`} onSelect={() => {
                           handleOnFilterClick(setCelula, s.celula)
                           setPage(1)
