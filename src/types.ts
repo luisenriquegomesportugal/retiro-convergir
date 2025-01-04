@@ -20,6 +20,8 @@ export type InscritoType = {
   pagamentosAFazer?: EventoPagamentosType[]
   novo?: boolean
   termos?: boolean
+  pagamento?: Pagamento
+  credenciamento?: Credenciamento
 }
 
 export const Steps = {

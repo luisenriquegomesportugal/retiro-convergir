@@ -38,7 +38,7 @@ export default function Formulario({ setStep, inscrito, setInscrito }: StepProps
     async function onSubmit({ cpf }: z.infer<typeof FormSchema>) {
 
         try {
-            const response = await fetch(`/api/eventos/retiroconvergir2025/inscricoes/${cpf}`)
+            const response = await fetch(`${process.env.DOMAIN_URL}/api/eventos/retiroconvergir2025/inscricoes/${cpf}`)
             const { inscrito } = await response.json() as { inscrito: InscritoType }
 
             setInscrito(inscrito)

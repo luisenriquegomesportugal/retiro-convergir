@@ -22,7 +22,7 @@ export default function Pagamentos({ setStep, inscrito, reset }: StepProps) {
         setLoading(true)
 
         try {
-            const response = await fetch(`/api/eventos/retiroconvergir2025/inscricoes/${inscrito?.cpf}/pagamento/${meioPagamento}`, {
+            const response = await fetch(`${process.env.DOMAIN_URL}/api/eventos/retiroconvergir2025/inscricoes/${inscrito?.cpf}/pagamento/${meioPagamento}`, {
                 method: 'POST',
                 body: JSON.stringify(inscrito?.pagamentosAFazer)
             })
@@ -47,7 +47,7 @@ export default function Pagamentos({ setStep, inscrito, reset }: StepProps) {
                     })
 
                     try {
-                        const responseVP = await fetch(`/api/eventos/retiroconvergir2025/inscricoes/${inscrito?.cpf}/pagamento/${data.txid}/status`, { cache: "no-cache" })
+                        const responseVP = await fetch(`${process.env.DOMAIN_URL}/api/eventos/retiroconvergir2025/inscricoes/${inscrito?.cpf}/pagamento/${data.txid}/status`, { cache: "no-cache" })
                         if (!responseVP.ok) {
                             throw new Error()
                         }

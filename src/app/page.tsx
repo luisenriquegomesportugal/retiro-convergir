@@ -30,7 +30,7 @@ export default function LoginForm() {
 
     useEffect(() => {
         (async () => {
-            const response = await fetch(`/api/eventos/retiroconvergir2025`)
+            const response = await fetch(`${process.env.DOMAIN_URL}/api/eventos/retiroconvergir2025`)
             const data = await response.json() as { evento: EventoType }
 
             setEvento(data.evento)

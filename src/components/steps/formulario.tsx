@@ -68,7 +68,7 @@ export default function Validacao({ setStep, inscrito, setInscrito, reset }: Ste
 
     useEffect(() => {
         (async () => {
-            const response = await fetch(`/api/celulas`)
+            const response = await fetch(`${process.env.DOMAIN_URL}/api/celulas`)
             const data = await response.json() as { celulas: CelulaType[] }
 
             setCelulas(data.celulas)
@@ -83,7 +83,7 @@ export default function Validacao({ setStep, inscrito, setInscrito, reset }: Ste
                 nome: data.nome.toLowerCase().replace(/(^.|\s+.)/g, m => m.toUpperCase())
             }
 
-            const response = await fetch(`/api/eventos/retiroconvergir2025/inscricoes`, {
+            const response = await fetch(`${process.env.DOMAIN_URL}/api/eventos/retiroconvergir2025/inscricoes`, {
                 method: 'POST',
                 body: JSON.stringify(payload)
             })
