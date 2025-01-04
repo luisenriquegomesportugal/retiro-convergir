@@ -9,5 +9,7 @@ export async function GET() {
 
     const eventos = Object.values<EventoType>(snapshotEventos.val());
 
+    eventos.forEach(evento => delete evento.inscricoes)
+
     return Response.json({ eventos })
 }
