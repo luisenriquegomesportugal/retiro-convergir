@@ -38,10 +38,12 @@ const getStatusPagamento = (inscrito: InscritoType) => {
     return "Cadastrado"
   }
 
-  let pagamentos = getPagamentos(inscrito)
-    .map(p => p.parcelas.map(pa => pa.parcela).join('ª, ')).join('ª, ')
+  let sorter = new Intl.Collator("pt-BR", { usage: "sort", numeric: true })
 
-  return `${pagamentos}ª pagas`
+  let pagamentos = getPagamentos(inscrito)
+    .map(p => p.parcelas.map(pa => pa.parcela.toString()).sort(sorter.compare).join('ª, ')).join('ª, ')
+
+  return `${pagamentos}ª`
 }
 
 const getPagamentos = (inscrito: InscritoType) => {
@@ -54,7 +56,7 @@ const getPagamentos = (inscrito: InscritoType) => {
     .filter(pagamento => {
       return ["paid", "CONCLUIDA"].includes(pagamento.status!)
     })
-    
+
   return tipoPagamento
 }
 
@@ -100,7 +102,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
       f.nome?.normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
       f.cpf,
       new Date(f.pagamento?.pagoEm!).toLocaleString('pt-BR')
-      ]
+    ]
       .some(v => v?.toLowerCase().includes(filterGlobal.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()))
   })
 
@@ -547,10 +549,10 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                   <TableCell>
                     {
                       getStatusPagamento(inscrito) == "Cadastrado"
-                      ? <Badge className="bg-yellow-500 hover:bg-yellow-400">Cadastrado</Badge> 
-                      : getStatusPagamento(inscrito) == "1ª, 2ª, 3ª, 4ª, 5ª, 6ª, 7ª pagas" 
-                      ? <Badge className="bg-green-600 hover:bg-green-500">{getStatusPagamento(inscrito)}</Badge>
-                      : <Badge className="bg-indigo-500 hover:bg-indigo-400">{getStatusPagamento(inscrito)}</Badge>
+                        ? <Badge className="bg-yellow-500 hover:bg-yellow-400">Cadastrado</Badge>
+                        : getStatusPagamento(inscrito) == "1ª, 2ª, 3ª, 4ª, 5ª, 6ª, 7ª"
+                          ? <Badge className="bg-green-600 hover:bg-green-500">{getStatusPagamento(inscrito)}</Badge>
+                          : <Badge className="bg-indigo-500 hover:bg-indigo-400">{getStatusPagamento(inscrito)}</Badge>
                     }
                   </TableCell>
                   <TableCell className="text-right flex space-x-2">
