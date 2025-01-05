@@ -43,7 +43,7 @@ const getStatusPagamento = (inscrito: InscritoType) => {
   let pagamentos = getPagamentos(inscrito)
     .map(p => p.parcelas.map(pa => pa.parcela.toString()).sort(sorter.compare).join('ª, ')).join('ª, ')
 
-  return `${pagamentos}ª`
+  return `${pagamentos}ª pagas`
 }
 
 const getPagamentos = (inscrito: InscritoType) => {
@@ -550,7 +550,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                     {
                       getStatusPagamento(inscrito) == "Cadastrado"
                         ? <Badge className="bg-yellow-500 hover:bg-yellow-400">Cadastrado</Badge>
-                        : getStatusPagamento(inscrito) == "1ª, 2ª, 3ª, 4ª, 5ª, 6ª, 7ª"
+                        : getStatusPagamento(inscrito) == "1ª, 2ª, 3ª, 4ª, 5ª, 6ª, 7ª pagas"
                           ? <Badge className="bg-green-600 hover:bg-green-500">{getStatusPagamento(inscrito)}</Badge>
                           : <Badge className="bg-indigo-500 hover:bg-indigo-400">{getStatusPagamento(inscrito)}</Badge>
                     }
