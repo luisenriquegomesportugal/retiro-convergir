@@ -2,7 +2,8 @@
 
 import Carregando from "@/components/carregando"
 import Fechada from "@/components/fechada"
-import Finalizacao from "@/components/steps/finalizacao"
+import FinalizacaoMoney from "@/components/steps/finalizacao-money"
+import Finalizacao from "@/components/steps/finalizacao-money"
 import Formulario from "@/components/steps/formulario"
 import Pagamentos from "@/components/steps/pagamento"
 import Parcelas from "@/components/steps/parcelas"
@@ -63,6 +64,7 @@ export default function LoginForm() {
                 || step === Steps.PARCELAS && <Parcelas evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
                 || step === Steps.PAGAMENTO && <Pagamentos evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
                 || step === Steps.FINALIZACAO && <Finalizacao evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
+                || step === Steps.FINALIZACAO_MONEY && <FinalizacaoMoney evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
             }
         </div>
     </div>

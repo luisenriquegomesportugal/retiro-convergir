@@ -54,7 +54,7 @@ const getPagamentos = (inscrito: InscritoType) => {
 
   tipoPagamento = tipoPagamento
     .filter(pagamento => {
-      return ["paid", "CONCLUIDA"].includes(pagamento.status!)
+      return ["paid", "CONCLUIDA", "ATIVA"].includes(pagamento.status!)
     })
 
   return tipoPagamento

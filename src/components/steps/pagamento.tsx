@@ -13,10 +13,10 @@ import { useState } from "react"
 import { PagamentoModal } from "../modal"
 import { Steps } from "@/types"
 
-export default function Pagamentos({ setStep, inscrito, reset }: StepProps) {
+export default function Pagamentos({ setStep, inscrito, reset, evento }: StepProps) {
     const [checkout, setCheckout] = useState<string>()
     const [loading, setLoading] = useState(false)
-    const [meioPagamento, setMeioPagamento] = useState<"money">("money")
+    const [meioPagamento, setMeioPagamento] = useState<"pix" | "credit_card" | "money">("money")
 
     async function onSubmit() {
         setLoading(true)
@@ -37,17 +37,63 @@ export default function Pagamentos({ setStep, inscrito, reset }: StepProps) {
                 return false
             }
 
-            setCheckout(undefined)
-            setStep(Steps.FINALIZACAO)
-            return true
+            let pagamentoEfetivado = false
+            if (meioPagamento != "money") {
+                setCheckout(data.checkout)
+
+                pagamentoEfetivado = await new Promise<boolean>(async (resolve, reject) => {
+                    let looping = 1
+                    while (looping > 0 && looping <= 60) {
+                        await new Promise(r => {
+                            setTimeout(r, 5000)
+                        })
+
+                        try {
+                            const responseVP = await fetch(`/api/eventos/retiroconvergir2025/inscricoes/${inscrito?.cpf}/pagamento/${data.txid}/status`, { cache: "no-cache" })
+                            if (!responseVP.ok) {
+                                throw new Error()
+                            }
+
+                            const { status } = await responseVP.json() as { status: string }
+
+                            looping = !['CONCLUIDA', 'paid'].includes(status) ? looping + 1 : 0
+                        }
+                        catch (e) {
+                            looping = -1
+                            alert("Falha ao observar o status de pagamento, tente novamente mais tarde.")
+                            reject()
+                        }
+                    }
+
+                    if (looping === 0) {
+                        resolve(true)
+                    } else {
+                        alert("Tempo de aguarde do pagamento ultrapassou 5m, tente verificar o status do pagamento mais tarde.")
+                        resolve(false)
+                    }
+                })
+            } else {
+                pagamentoEfetivado = true
+            }
+
+            if (pagamentoEfetivado) {
+                setCheckout(undefined)
+                setStep(meioPagamento == "money" ? Steps.FINALIZACAO_MONEY : Steps.FINALIZACAO)
+                return true
+            } else {
+                setCheckout(undefined)
+                reset()
+                return false
+            }
         } catch (e: any) {
             alert("Falha ao gerar o pagamento, avise sua liderança e tente mais tarde.")
-            return false
         } finally {
             setLoading(false)
         }
     }
 
+    const pagamentoTotaisPix = inscrito?.pagamentosAFazer?.reduce((a, p) => a + p.valores['pix'], 0)
+    const pagamentoTotaisCartao = inscrito?.pagamentosAFazer?.reduce((a, p) => a + p.valores['credit_card'], 0)
     const pagamentoTotaisMoney = inscrito?.pagamentosAFazer?.reduce((a, p) => a + p.valores['money'], 0)
 
     return <>
@@ -59,15 +105,39 @@ export default function Pagamentos({ setStep, inscrito, reset }: StepProps) {
             </CardHeader>
             <CardContent className="flex flex-col space-y-4">
                 <div className="grid gap-2 grid-cols-1">
-                    <Button
-                        variant={"ghost"}
-                        onClick={() => setMeioPagamento("money")}
-                        className={`border w-full h-full flex flex-col justify-start items-start px-4 py-2 space-y-2 ${meioPagamento === "money" ? 'bg-muted' : ''}`}>
-                        <h1 className="text-left text-lg font-semibold">Pix</h1>
-                        <ul className="text-left text-xs font-light">
-                            <li><b>Total:</b> {pagamentoTotaisMoney?.toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>
-                        </ul>
-                    </Button>
+                    {
+                        evento?.tiposPagamentos.includes("money") && <Button
+                            variant={"ghost"}
+                            onClick={() => setMeioPagamento("money")}
+                            className={`border w-full h-full flex flex-col justify-start items-start px-4 py-2 space-y-2 ${meioPagamento === "money" ? 'bg-muted' : ''}`}>
+                            <h1 className="text-left text-lg font-semibold">Dinheiro</h1>
+                            <ul className="text-left text-xs font-light">
+                                <li><b>Total:</b> {pagamentoTotaisMoney?.toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>
+                            </ul>
+                        </Button>
+                    }
+                    {
+                        evento?.tiposPagamentos.includes("pix") && <Button
+                            variant={"ghost"}
+                            onClick={() => setMeioPagamento("pix")}
+                            className={`border w-full h-full flex flex-col justify-start items-start px-4 py-2 space-y-2 ${meioPagamento === "pix" ? 'bg-muted' : ''}`}>
+                            <h1 className="text-left text-lg font-semibold">Pix</h1>
+                            <ul className="text-left text-xs font-light">
+                                <li><b>Total:</b> {pagamentoTotaisPix?.toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>
+                            </ul>
+                        </Button>
+                    }
+                    {
+                        evento?.tiposPagamentos.includes("credit_card") && <Button
+                            variant={"ghost"}
+                            onClick={() => setMeioPagamento("credit_card")}
+                            className={`border w-full h-full flex flex-col justify-start items-start px-4 py-2 space-y-2 ${meioPagamento === "credit_card" ? 'bg-muted' : ''}`}>
+                            <h1 className="text-left text-lg font-semibold">Cartão de crédito</h1>
+                            <ul className="text-left text-xs font-light">
+                                <li><b>Total:</b> {pagamentoTotaisCartao?.toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>
+                            </ul>
+                        </Button>
+                    }
                 </div>
             </CardContent>
             <CardFooter className="flex flex-col gap-4">

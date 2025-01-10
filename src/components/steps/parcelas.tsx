@@ -73,9 +73,9 @@ export default function Parcelas({ setStep, inscrito, setInscrito, evento }: Ste
                         onClick={() => selecionarParcela(pagamento)} />
                     <h1 className="text-left text-lg font-semibold">{pagamento.parcela}ª parcela</h1>
                     <ul className="text-left text-xs font-light">
-                        {pagamento.valores['pix'] && <li><b>Pix:</b> {pagamento.valores['pix'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
-                        {pagamento.valores['credit_card'] && <li><b>Crédito:</b> {pagamento.valores['credit_card'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
-                        {pagamento.valores['money'] && <li><b>Dinheiro:</b> {pagamento.valores['money'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
+                        {evento.tiposPagamentos.includes("pix") && pagamento.valores['pix'] && <li><b>Pix:</b> {pagamento.valores['pix'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
+                        {evento.tiposPagamentos.includes("credit_card") && pagamento.valores['credit_card'] && <li><b>Crédito:</b> {pagamento.valores['credit_card'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
+                        {evento.tiposPagamentos.includes("money") && pagamento.valores['money'] && <li><b>Dinheiro:</b> {pagamento.valores['money'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
                     </ul>
                 </label>)
                 }

@@ -8,22 +8,22 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card"
-import { CalendarClock, CheckCircle, Plus } from "lucide-react"
+import { CheckCircle, Plus } from "lucide-react"
 
 export default function Finalizacao({ inscrito, reset }: StepProps) {
     return <Card className="w-full max-w-sm">
         <CardHeader>
             <div className="flex flex-row space-x-4">
-                <CalendarClock size={42} className="text-green-600" />
+                <CheckCircle size={42} className="text-green-600" />
                 <div className="flex-1">
-                    <CardTitle>Agendamento realizado com sucesso</CardTitle>
-                    <CardDescription>Falta pouco para Finalizar o pagamento {inscrito?.pagamentosAFazer?.length == 1 ? 'de sua parcela' : 'das suas parcelas'}</CardDescription>
+                    <CardTitle>Pagamento realizado com sucesso</CardTitle>
+                    <CardDescription>{inscrito?.pagamentosAFazer?.length == 1 ? 'Parcela paga' : 'Parcelas pagas'}</CardDescription>
                 </div>
             </div>
         </CardHeader>
         <CardContent className="space-y-4 text-justify">
-            <p>Olá {inscrito?.nome?.split(' ').shift()}, seu agendamento de pagamento foi processado com sucesso, <b>fique atento junto de sua liderança para o dia da realização do pagamento em espécie para concluir o pagamento de sua parcela.</b></p>
-            <p>A cada dia que passa estamos mais ansiosos para viver tudo o que Deus tem preparado para o <b>Retiro Convergir 2025</b>.</p>
+            <p>Olá {inscrito?.nome?.split(' ').shift()}, seu pagamento foi processado com sucesso, a cada dia que passa estamos mais ansiosos para viver tudo o que Deus tem preparado para o <b>Retiro Convergir 2025</b>.</p>
+            <p>Aguarde o direcionamento da sua liderança para os próximos passos.</p>
         </CardContent>
         <CardFooter className="flex flex-col gap-4">
             <Button

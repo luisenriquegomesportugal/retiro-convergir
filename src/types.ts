@@ -30,7 +30,8 @@ export const Steps = {
   "TERMOS": 3,
   "PARCELAS": 4,
   "PAGAMENTO": 5,
-  "FINALIZACAO": 6
+  "FINALIZACAO": 6,
+  "FINALIZACAO_MONEY": 7
 }
 
 export type Pagamento = {
@@ -59,6 +60,7 @@ export type EventoType = {
   pagamentos: EventoPagamentosType[]
   inscricoesAbertas: boolean
   limitePagamentos: string
+  tiposPagamentos: string
   meta?: number
   metaBatida?: Object
   inscricoes?: InscritoType[]
