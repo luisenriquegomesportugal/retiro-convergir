@@ -47,6 +47,13 @@ export default function Parcelas({ setStep, inscrito, setInscrito, evento }: Ste
                 ? a.concat(p.parcelas.map(m => m.parcela))
                 : a
         }, [])
+    
+    const parcelasAtivas = Object.values(inscrito?.pagamentos || [])
+        .reduce<number[]>((a, p) => {
+            return ["ATIVA"].includes(p.status!)
+                ? a.concat(p.parcelas.map(m => m.parcela))
+                : a
+        }, [])
 
     return <Card className="w-full max-w-sm">
         <CardHeader>
@@ -58,7 +65,7 @@ export default function Parcelas({ setStep, inscrito, setInscrito, evento }: Ste
                 {evento?.pagamentos.map(pagamento => <label
                     key={pagamento.parcela}
                     htmlFor={`parcela_${pagamento.parcela}`}
-                    className={`cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70 border rounded-sm w-full h-full flex flex-col space-x-2 px-4 py-3 ${parcelasPagas?.includes(pagamento.parcela) ? 'bg-green-200' : parcelasSelecionadas?.some(s => s.parcela == pagamento.parcela) ? 'bg-blue-200' : ''}`}>
+                    className={`cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70 border rounded-sm w-full h-full flex flex-col space-x-2 px-4 py-3 ${parcelasPagas?.includes(pagamento.parcela) ? 'bg-green-200' : parcelasSelecionadas?.some(s => s.parcela == pagamento.parcela) ? 'bg-blue-200' : parcelasAtivas?.includes(pagamento.parcela) ? 'bg-yellow-200' : ''}`}>
                     <Checkbox
                         id={`parcela_${pagamento.parcela}`}
                         className="hidden"
@@ -66,8 +73,9 @@ export default function Parcelas({ setStep, inscrito, setInscrito, evento }: Ste
                         onClick={() => selecionarParcela(pagamento)} />
                     <h1 className="text-left text-lg font-semibold">{pagamento.parcela}ª parcela</h1>
                     <ul className="text-left text-xs font-light">
-                        <li><b>Pix:</b> {pagamento.valores['pix'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>
-                        <li><b>Crédito:</b> {pagamento.valores['credit_card'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>
+                        {pagamento.valores['pix'] && <li><b>Pix:</b> {pagamento.valores['pix'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
+                        {pagamento.valores['credit_card'] && <li><b>Crédito:</b> {pagamento.valores['credit_card'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
+                        {pagamento.valores['money'] && <li><b>Dinheiro:</b> {pagamento.valores['money'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
                     </ul>
                 </label>)
                 }
@@ -82,7 +90,7 @@ export default function Parcelas({ setStep, inscrito, setInscrito, evento }: Ste
                     Selecionado
                 </div>
                 <div className="flex flex-row items-center">
-                    <Circle className="size-2 mr-4" />
+                <Dot className="size-10 text-yellow-400" />
                     À pagar
                 </div>
             </div>
