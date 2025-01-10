@@ -35,7 +35,8 @@ type Props = {
 }
 
 const getStatusPagamento = (inscrito: InscritoType) => {
-  if (!inscrito.pagamentos || !Object.values(inscrito.pagamentos).some(pagamento => ["paid", "CONCLUIDA"].includes(pagamento.status!))) {
+  console.log(inscrito.pagamentos)
+  if (!inscrito.pagamentos) {
     return null
   }
 
