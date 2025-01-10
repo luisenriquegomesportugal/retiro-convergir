@@ -23,6 +23,7 @@ import { parseAsArrayOf, parseAsInteger, parseAsString, queryTypes, SetValues, u
 import { toast } from "sonner"
 import DialogTablePagamentoCamera from "./dialog-camera-pagamento"
 import DialogTableCredenciamento from "./dialog-credenciamento"
+import DialogPagamentoDinheiro from "./dialog-pagamento-dinheiro"
 
 export const dynamic = 'auto'
 export const revalidate = 0
@@ -35,15 +36,16 @@ type Props = {
 
 const getStatusPagamento = (inscrito: InscritoType) => {
   if (!inscrito.pagamentos || !Object.values(inscrito.pagamentos).some(pagamento => ["paid", "CONCLUIDA"].includes(pagamento.status!))) {
-    return "Cadastrado"
+    return null
   }
 
   let sorter = new Intl.Collator("pt-BR", { usage: "sort", numeric: true })
 
-  let pagamentos = getPagamentos(inscrito)
-    .map(p => p.parcelas.map(pa => pa.parcela.toString()).sort(sorter.compare).join('ª, ')).join('ª, ')
+  let parcelas: { [parcela: string]: Pagamento } = {}
+  getPagamentos(inscrito)
+    .map(p => p.parcelas.sort((p1, p2) => sorter.compare(p1.parcela.toString(), p2.parcela.toString())).forEach(pa => parcelas[pa.parcela.toString()] = p))
 
-  return `${pagamentos}ª pagas`
+  return parcelas
 }
 
 const getPagamentos = (inscrito: InscritoType) => {
@@ -54,7 +56,7 @@ const getPagamentos = (inscrito: InscritoType) => {
 
   tipoPagamento = tipoPagamento
     .filter(pagamento => {
-      return ["paid", "CONCLUIDA", "ATIVA"].includes(pagamento.status!)
+      return ["paid", "link", "CONCLUIDA", "ATIVA"].includes(pagamento.status!)
     })
 
   return tipoPagamento
@@ -492,7 +494,18 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
               className="gap-1 text-sm"
               onClick={async () => {
                 let inscricoesText = inscricoesFiltradas
-                  .map(v => ([v.rede, v.celula, v.nome, getStatusPagamento(v), v.telefone].join('\t')))
+                  .map(v => {
+                    let pagamento = "Cadastrado"
+                    let pagamentos = getStatusPagamento(v)
+                    if (pagamentos != null) {
+                      pagamento = Object.entries(pagamentos)
+                        .filter(([parcela, pagamento]) => ["paid", "CONCLUIDA"].includes(pagamento.status!))
+                        .map(([parcela, pagamento]) => `${parcela}ª`)
+                        .join(', ')
+                    }
+
+                    return [v.rede, v.celula, v.nome, pagamento, v.telefone].join('\t')
+                  })
                 await navigator.clipboard.writeText([
                   "Rede\tCélula\tNome\tPagamento\tSituação\tTelefone",
                   ...inscricoesText
@@ -547,16 +560,16 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                     {inscrito.cpf.replace(/\d{3}(\d{3})(\d{2})\d{3}/, '***.$1.$2*-**')}
                   </TableCell>
                   <TableCell>
-                    {
-                      getStatusPagamento(inscrito) == "Cadastrado"
-                        ? <Badge className="bg-yellow-500 hover:bg-yellow-400">Cadastrado</Badge>
-                        : getStatusPagamento(inscrito) == "1ª, 2ª, 3ª, 4ª, 5ª, 6ª, 7ª pagas"
-                          ? <Badge className="bg-green-600 hover:bg-green-500">{getStatusPagamento(inscrito)}</Badge>
-                          : <Badge className="bg-indigo-500 hover:bg-indigo-400">{getStatusPagamento(inscrito)}</Badge>
-                    }
+                    <div className="flex space-x-1">
+                      {
+                        getStatusPagamento(inscrito) == null
+                          ? <Badge className="bg-gray-500">Cadastrado</Badge>
+                          : Object.entries(getStatusPagamento(inscrito)!)
+                            .map(([parcela, pagamento], i, a) => <div key={`${inscrito.cpf}-${parcela}`} className={`size-6 flex justify-center items-center rounded-full text-white ${a.length == 7 ? 'bg-green-500' : ["paid", "CONCLUIDA"].includes(pagamento.status!) ? 'bg-indigo-500' : "bg-yellow-500"}`}>{parcela}ª</div>)
+                      }
+                    </div>
                   </TableCell>
                   <TableCell className="text-right flex space-x-2">
-
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button
@@ -570,6 +583,13 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Ações</DropdownMenuLabel>
+                        {
+                          Object.values(getStatusPagamento(inscrito) || {}).some(pagamento => pagamento.status === "ATIVA" && pagamento.tipo === "money")
+                          && <>
+                            <DropdownMenuSeparator />
+                            <DialogPagamentoDinheiro evento={evento} inscrito={inscrito} />
+                          </>
+                        }
                         <DropdownMenuSeparator />
                         <DropdownMenuItem className="cursor-pointer" onClick={() => window.location.href = `tel:+55${inscrito.telefone}`}>
                           Ligar
