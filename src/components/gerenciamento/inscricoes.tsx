@@ -35,7 +35,6 @@ type Props = {
 }
 
 const getStatusPagamento = (inscrito: InscritoType) => {
-  console.log(inscrito.pagamentos)
   if (!inscrito.pagamentos) {
     return null
   }
