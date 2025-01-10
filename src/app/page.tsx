@@ -47,9 +47,9 @@ export default function LoginForm() {
         return <Carregando />
     }
 
-    // if (!evento || !evento.inscricoesAbertas) {
-    //     return <Fechada />
-    // }
+    if (!evento || !evento.inscricoesAbertas) {
+        return <Fechada />
+    }
 
     return (<div className="w-full flex flex-col lg:flex-row items-center justify-around">
         <div className="flex flex-1 items-center justify-center">
