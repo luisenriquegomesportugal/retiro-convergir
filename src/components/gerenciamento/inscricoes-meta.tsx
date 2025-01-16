@@ -113,7 +113,8 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
     if (!!i.pagamentos) {
       let pagamentos = Object.values(i.pagamentos)
         .filter(p => ["CONCLUIDA", "paid"].includes(p.status!))
-        .reduce<number[]>((a, p) => p.parcelas.map(pa => pa.parcela), [])
+        .reduce<number[]>((a, p) => a.concat(p.parcelas.map(pa => pa.parcela)), [])
+        console.log(i.nome, Object.values(i.pagamentos), pagamentos)
 
       inscricoesControle[i.celula || "Convidado"].inscricoesFinalizadas += pagamentos.length == 7 ? 1 : 0
     }

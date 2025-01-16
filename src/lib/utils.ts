@@ -12,7 +12,7 @@ export function getPagamentoInscrito(inscrito: InscritoType) {
 
 export function getPagamentosInscrito(inscrito: InscritoType) {
   if (!inscrito.pagamentos) {
-    return null
+    return []
   }
 
   return Object.values(inscrito.pagamentos)

@@ -42,32 +42,19 @@ const getStatusPagamento = (inscrito: InscritoType) => {
   let sorter = new Intl.Collator("pt-BR", { usage: "sort", numeric: true })
 
   let parcelas: { [parcela: string]: Pagamento } = {}
-  getPagamentos(inscrito)
+  getPagamentosInscrito(inscrito)
     .map(p => p.parcelas.sort((p1, p2) => sorter.compare(p1.parcela.toString(), p2.parcela.toString())).forEach(pa => parcelas[pa.parcela.toString()] = p))
 
   return parcelas
 }
 
-const getPagamentos = (inscrito: InscritoType) => {
-  let tipoPagamento = getPagamentosInscrito(inscrito)
-  if (tipoPagamento == null) {
-    return [];
-  }
-
-  tipoPagamento = tipoPagamento
-    .filter(pagamento => {
-      return ["paid", "link", "CONCLUIDA", "ATIVA"].includes(pagamento.status!)
-    })
-
-  return tipoPagamento
-}
-
-const parseTipoPagamento = (inscrito: InscritoType) => {
+const parseFiltroTipoPagamento = (inscrito: InscritoType) => {
   if (!inscrito.pagamentos || !Object.values(inscrito.pagamentos).some(pagamento => ["paid", "CONCLUIDA"].includes(pagamento.status!))) {
     return ["Cadastrado"]
   }
 
-  return getPagamentos(inscrito)
+  return getPagamentosInscrito(inscrito)
+    .filter(pagamento => ["paid", "CONCLUIDA"].includes(pagamento.status!))
     .reduce<string[]>((a, p) => a.concat(p.parcelas.map(pa => `${pa.parcela}ª parcela`)), [])
 }
 
@@ -92,7 +79,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
   let inscricoesFiltradas = inscricoes
   inscricoesFiltradas = inscricoesFiltradas.filter(f => !rede ? true : rede!.includes(f.rede!))
   inscricoesFiltradas = inscricoesFiltradas.filter(f => !celula ? true : celula.includes("Convidado") ? !f.celula : celula!.includes(f.celula!))
-  inscricoesFiltradas = inscricoesFiltradas.filter(f => !tipoPagamento ? true : tipoPagamento?.every(item => parseTipoPagamento(f).includes(item)))
+  inscricoesFiltradas = inscricoesFiltradas.filter(f => !tipoPagamento ? true : tipoPagamento?.every(item => parseFiltroTipoPagamento(f).includes(item)))
   inscricoesFiltradas = inscricoesFiltradas.filter(f => {
     if (!filterGlobal) {
       return true
@@ -565,7 +552,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                         getStatusPagamento(inscrito) == null
                           ? <Badge className="bg-gray-500">Cadastrado</Badge>
                           : Object.entries(getStatusPagamento(inscrito)!)
-                            .map(([parcela, pagamento], i, a) => <div key={`${inscrito.cpf}-${parcela}`} className={`size-6 flex justify-center items-center rounded-full text-white ${a.length == 7 ? 'bg-green-500' : ["paid", "CONCLUIDA"].includes(pagamento.status!) ? 'bg-indigo-500' : "bg-yellow-500"}`}>{parcela}ª</div>)
+                            .map(([parcela, pagamento], i, a) => <div key={`${inscrito.cpf}-${parcela}`} className={`size-6 flex justify-center items-center rounded-full text-white ${a.length === 7 && a.every(([_, e]) => ["paid", "CONCLUIDA"].includes(e.status!)) ? 'bg-green-500' : ["paid", "CONCLUIDA"].includes(pagamento.status!) ? 'bg-indigo-500' : "bg-yellow-500"}`}>{parcela}ª</div>)
                       }
                     </div>
                   </TableCell>
