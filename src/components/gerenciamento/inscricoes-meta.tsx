@@ -35,7 +35,8 @@ type CelulaControle = {
   rede: string,
   celula: string,
   lider?: string,
-  inscricoes: number
+  inscricoes: number,
+  inscricoesFinalizadas: number
 }
 
 function getMetaStatus(evento: EventoType, celulaControle: CelulaControle) {
@@ -43,7 +44,7 @@ function getMetaStatus(evento: EventoType, celulaControle: CelulaControle) {
     return ""
   }
 
-  if (celulaControle.inscricoes < 10) {
+  if (celulaControle.inscricoesFinalizadas < 10) {
     return "Não chegou na Meta"
   } else {
     const celulaId = celulaControle.celula.replaceAll(/[^\d]+/g, '')
@@ -54,7 +55,7 @@ function getMetaStatus(evento: EventoType, celulaControle: CelulaControle) {
 }
 
 function MetaStatus({ evento, celulaControle }: { evento: EventoType, celulaControle: CelulaControle }) {
-  if (celulaControle.inscricoes < 10) {
+  if (celulaControle.inscricoesFinalizadas < 10) {
     return <Badge className="text-xs text-center" variant="destructive">
       Não chegou na Meta
     </Badge>
@@ -94,6 +95,7 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
       rede: c.rede || "",
       celula: c.celula,
       inscricoes: 0,
+      inscricoesFinalizadas: 0,
       lider: c.lider
     }
   })
@@ -101,11 +103,20 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
   inscricoesControle["Convidado"] = {
     rede: "",
     celula: "Convidado",
-    inscricoes: 0
+    inscricoes: 0,
+    inscricoesFinalizadas: 0
   }
 
   inscricoes.forEach(i => {
     inscricoesControle[i.celula || "Convidado"].inscricoes += 1
+
+    if (!!i.pagamentos) {
+      let pagamentos = Object.values(i.pagamentos)
+        .filter(p => ["CONCLUIDA", "paid"].includes(p.status!))
+        .reduce<number[]>((a, p) => p.parcelas.map(pa => pa.parcela), [])
+
+      inscricoesControle[i.celula || "Convidado"].inscricoesFinalizadas += pagamentos.length == 7 ? 1 : 0
+    }
   })
 
   let celulasFiltradas: CelulaControle[] = Object.values(inscricoesControle)
@@ -117,7 +128,8 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
       return true
     }
 
-    let filterByQuantity = /(<|>|>=|<=|=)\s?(\d+)/g.exec(filterGlobal)
+    let filterByQuantity = /((i|f)(<|>|>=|<=|=))\s?(\d+)/g.exec(filterGlobal)
+    console.log(filterByQuantity)
     let filterByArray = [
       f.rede,
       f.celula?.normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
@@ -131,16 +143,26 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
       || (
         !filterByQuantity
           ? true
-          : filterByQuantity[1] == ">" ? f.inscricoes > parseInt(filterByQuantity[2])
-            : filterByQuantity[1] == "<" ? f.inscricoes < parseInt(filterByQuantity[2])
-              : filterByQuantity[1] == "<=" ? f.inscricoes <= parseInt(filterByQuantity[2])
-                : filterByQuantity[1] == ">=" ? f.inscricoes >= parseInt(filterByQuantity[2])
-                  : f.inscricoes == parseInt(filterByQuantity[2])
+          : filterByQuantity[1] == "i>" ? f.inscricoes > parseInt(filterByQuantity[4])
+            : filterByQuantity[1] == "i<" ? f.inscricoes < parseInt(filterByQuantity[4])
+              : filterByQuantity[1] == "i<=" ? f.inscricoes <= parseInt(filterByQuantity[4])
+                : filterByQuantity[1] == "i>=" ? f.inscricoes >= parseInt(filterByQuantity[4])
+                  : filterByQuantity[1] == "i=" ? f.inscricoes == parseInt(filterByQuantity[4])
+                    : false
+      ) || (
+        !filterByQuantity
+          ? true
+          : filterByQuantity[1] == "f>" ? f.inscricoesFinalizadas > parseInt(filterByQuantity[4])
+            : filterByQuantity[1] == "f<" ? f.inscricoesFinalizadas < parseInt(filterByQuantity[4])
+              : filterByQuantity[1] == "f<=" ? f.inscricoesFinalizadas <= parseInt(filterByQuantity[4])
+                : filterByQuantity[1] == "f>=" ? f.inscricoesFinalizadas >= parseInt(filterByQuantity[4])
+                  : filterByQuantity[1] == "f=" ? f.inscricoesFinalizadas == parseInt(filterByQuantity[4])
+                    : false
       )
   })
 
   const sorter = new Intl.Collator('pt-BR', { usage: "sort", numeric: true })
-  celulasFiltradas.sort((a, b) => sorter.compare(`${b.inscricoes}-${b.rede}-${b.celula}`, `${a.inscricoes}-${a.rede}-${a.celula}`))
+  celulasFiltradas.sort((a, b) => sorter.compare(`${b.inscricoesFinalizadas}-${b.inscricoes}-${b.rede}-${b.celula}`, `${a.inscricoesFinalizadas}-${a.inscricoes}-${a.rede}-${a.celula}`))
 
   let pagesLength = celulasFiltradas.length ? Math.ceil(celulasFiltradas.length / 10) : 0
 
@@ -395,7 +417,7 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
               <TableHead className="hidden md:table-cell">
                 Líder
               </TableHead>
-              <TableHead>Total de Inscrições</TableHead>
+              <TableHead><abbr title="Inscrições finalizadas / Total de inscrições">Total de Inscrições (f/i)</abbr></TableHead>
               <TableHead>Meta</TableHead>
               <TableHead></TableHead>
             </TableRow>
@@ -418,7 +440,7 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
                     {celulaFiltrada.lider || '-'}
                   </TableCell>
                   <TableCell>
-                    {celulaFiltrada.inscricoes}
+                    {celulaFiltrada.inscricoesFinalizadas}/{celulaFiltrada.inscricoes}
                   </TableCell>
                   <TableCell>
                     {
