@@ -158,7 +158,6 @@ export default function CardTableCredenciamento({ celulas, evento }: Props) {
             f.celula?.normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
             f.nome?.normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
             f.cpf,
-            new Date(f.pagamento?.pagoEm!).toLocaleString('pt-BR'),
             getStatusPagamento(f),
             getTipoPagamento(f)
         ]
