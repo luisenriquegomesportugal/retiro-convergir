@@ -89,8 +89,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
       f.rede,
       f.celula?.normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
       f.nome?.normalize('NFD').replace(/[\u0300-\u036f]/g, ""),
-      f.cpf,
-      new Date(f.pagamento?.pagoEm!).toLocaleString('pt-BR')
+      f.cpf
     ]
       .some(v => v?.toLowerCase().includes(filterGlobal.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()))
   })

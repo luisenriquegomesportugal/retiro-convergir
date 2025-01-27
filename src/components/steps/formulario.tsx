@@ -115,7 +115,7 @@ export default function Validacao({ setStep, inscrito, setInscrito, reset }: Ste
         .sort((a, b) => sorter.compare(a, b))
 
     return <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit, data => console.log(data))}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
             <Card className="w-full max-w-sm">
                 <CardHeader>
                     <CardTitle>Formulário</CardTitle>

@@ -114,7 +114,6 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
       let pagamentos = Object.values(i.pagamentos)
         .filter(p => ["CONCLUIDA", "paid"].includes(p.status!))
         .reduce<number[]>((a, p) => a.concat(p.parcelas.map(pa => pa.parcela)), [])
-        console.log(i.nome, Object.values(i.pagamentos), pagamentos)
 
       inscricoesControle[i.celula || "Convidado"].inscricoesFinalizadas += pagamentos.length == 7 ? 1 : 0
     }
@@ -130,7 +129,6 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
     }
 
     let filterByQuantity = /((i|f)(<|>|>=|<=|=))\s?(\d+)/g.exec(filterGlobal)
-    console.log(filterByQuantity)
     let filterByArray = [
       f.rede,
       f.celula?.normalize('NFD').replace(/[\u0300-\u036f]/g, ""),

@@ -42,6 +42,7 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.53.0",
+    "recharts": "^2.15.0",
     "sdk-node-apis-efi": "https://github.com/efipay/sdk-node-apis-efi.git",
     "site-api": "file:",
     "socket.io": "^4.7.5",

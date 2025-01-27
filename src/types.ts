@@ -20,7 +20,7 @@ export type InscritoType = {
   pagamentosAFazer?: EventoPagamentosType[]
   novo?: boolean
   termos?: boolean
-  pagamento?: Pagamento
+  pagamento?: {[txid: string]: Pagamento}
   credenciamento?: Credenciamento
 }
 
