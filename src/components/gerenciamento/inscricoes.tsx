@@ -25,7 +25,6 @@ import DialogTablePagamentoCamera from "./dialog-camera-pagamento"
 import DialogTableCredenciamento from "./dialog-credenciamento"
 import DialogPagamentoDinheiro from "./dialog-pagamento-dinheiro"
 
-export const dynamic = 'auto'
 export const revalidate = 0
 
 type Props = {
@@ -39,13 +38,18 @@ const getStatusPagamento = (inscrito: InscritoType) => {
     return null
   }
 
-  let sorter = new Intl.Collator("pt-BR", { usage: "sort", numeric: true })
+  let pagamentos = getPagamentosInscrito(inscrito)
+  if (pagamentos.every(p => !["paid", "CONCLUIDA", "ATIVA", "link"].includes(p.status!))) {
+    return null
+  } else {
+    let sorter = new Intl.Collator("pt-BR", { usage: "sort", numeric: true })
+    let parcelas: { [parcela: string]: Pagamento } = {}
+    pagamentos.forEach(p => p.parcelas
+      .sort((p1, p2) => sorter.compare(p1.parcela.toString(), p2.parcela.toString()))
+      .forEach(pa => parcelas[pa.parcela.toString()] = p))
 
-  let parcelas: { [parcela: string]: Pagamento } = {}
-  getPagamentosInscrito(inscrito)
-    .map(p => p.parcelas.sort((p1, p2) => sorter.compare(p1.parcela.toString(), p2.parcela.toString())).forEach(pa => parcelas[pa.parcela.toString()] = p))
-
-  return parcelas
+    return parcelas
+  }
 }
 
 const parseFiltroTipoPagamento = (inscrito: InscritoType) => {

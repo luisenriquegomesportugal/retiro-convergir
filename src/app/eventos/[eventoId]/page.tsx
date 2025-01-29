@@ -14,6 +14,11 @@ type Props = {
   }
 }
 
+const headers = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',    
+  'Pragma': 'no-cache',
+  'Expira': '0'
+}
 
 export default async function EventoPage({ params }: Props) {
   const celulasResponse = await fetch(`${process.env.DOMAIN_URL}/api/celulas`)
@@ -22,7 +27,7 @@ export default async function EventoPage({ params }: Props) {
   const eventoResponse = await fetch(`${process.env.DOMAIN_URL}/api/eventos/${params.eventoId}`)
   const { evento } = await eventoResponse.json() as { evento: EventoType }
 
-  const eventoInscricoesResponse = await fetch(`${process.env.DOMAIN_URL}/api/eventos/${params.eventoId}/inscricoes`)
+  const eventoInscricoesResponse = await fetch(`${process.env.DOMAIN_URL}/api/eventos/${params.eventoId}/inscricoes`, {headers})
   const { inscricoes } = await eventoInscricoesResponse.json() as { inscricoes: InscritoType[] }
 
   return <div className="flex flex-col-reverse lg:flex-row  justify-center gap-4 w-full">
