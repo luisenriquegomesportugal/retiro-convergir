@@ -44,9 +44,11 @@ const getStatusPagamento = (inscrito: InscritoType) => {
   } else {
     let sorter = new Intl.Collator("pt-BR", { usage: "sort", numeric: true })
     let parcelas: { [parcela: string]: Pagamento } = {}
-    pagamentos.forEach(p => p.parcelas
-      .sort((p1, p2) => sorter.compare(p1.parcela.toString(), p2.parcela.toString()))
-      .forEach(pa => parcelas[pa.parcela.toString()] = p))
+    pagamentos
+      .filter(p => ["paid", "CONCLUIDA", "ATIVA", "link"].includes(p.status!))
+      .forEach(p => p.parcelas
+        .sort((p1, p2) => sorter.compare(p1.parcela.toString(), p2.parcela.toString()))
+        .forEach(pa => parcelas[pa.parcela.toString()] = p))
 
     return parcelas
   }
