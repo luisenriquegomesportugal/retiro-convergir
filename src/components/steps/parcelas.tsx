@@ -17,7 +17,7 @@ export default function Parcelas({ setStep, inscrito, setInscrito, evento }: Ste
     const [loading, setLoading] = useState(true)
     const [parcelas, setParcelas] = useState<EventoPagamentosType[]>([])
     const [parcelasSelecionadas, setParcelasSelecionadas] = useState<EventoPagamentosType[]>(inscrito?.pagamentosAFazer || [])
-    
+
     let currencyFormat = new Intl.NumberFormat('pt-BR', { currency: "BRL", style: "currency" })
 
     useEffect(() => {
@@ -85,18 +85,22 @@ export default function Parcelas({ setStep, inscrito, setInscrito, evento }: Ste
                             {parcelas.map(pagamento => <label
                                 key={pagamento.parcela}
                                 htmlFor={`parcela_${pagamento.parcela}`}
-                                className={`cursor-pointer peer-disabled:cursor-not-allowed peer-disabled:opacity-70 border rounded-sm w-full h-full flex flex-col space-x-2 px-4 py-3 ${pagamento.paga ? 'bg-green-200' : parcelasSelecionadas?.some(s => s.parcela == pagamento.parcela) ? 'bg-blue-200' : parcelasAtivas?.includes(pagamento.parcela) ? 'bg-yellow-200' : ''}`}>
+                                className={`${!pagamento.paga && 'cursor-pointer'} peer-disabled:cursor-not-allowed peer-disabled:opacity-70 border rounded-sm w-full h-full flex flex-col space-x-2 px-4 py-3 ${pagamento.paga ? 'bg-green-200' : parcelasSelecionadas?.some(s => s.parcela == pagamento.parcela) ? 'bg-blue-200' : parcelasAtivas?.includes(pagamento.parcela) ? 'bg-yellow-200' : ''}`}>
                                 <Checkbox
                                     id={`parcela_${pagamento.parcela}`}
                                     className="hidden"
                                     disabled={pagamento.paga}
                                     onClick={() => selecionarParcela(pagamento)} />
                                 <h1 className="text-left text-lg font-semibold">{pagamento.parcela}ª parcela</h1>
-                                <ul className="text-left text-xs font-light">
-                                    {evento?.tiposPagamentos.includes("pix") && <li><b>Pix:</b> {pagamento.valores['pix'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
-                                    {evento?.tiposPagamentos.includes("credit_card") && <li><b>Crédito:</b> {pagamento.valores['credit_card'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
-                                    {evento?.tiposPagamentos.includes("money") && <li><b>Dinheiro:</b> {pagamento.valores['money'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
-                                </ul>
+                                {
+                                    pagamento.paga
+                                        ? <span className="text-xs font-light">Paga</span>
+                                        : <ul className="text-left text-xs font-light">
+                                            {evento?.tiposPagamentos.includes("pix") && <li><b>Pix:</b> {pagamento.valores['pix'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
+                                            {evento?.tiposPagamentos.includes("credit_card") && <li><b>Crédito:</b> {pagamento.valores['credit_card'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
+                                            {evento?.tiposPagamentos.includes("money") && <li><b>Dinheiro:</b> {pagamento.valores['money'].toLocaleString('pt-BR', { currency: "BRL", style: "currency" })}</li>}
+                                        </ul>
+                                }
                             </label>)
                             }
                         </div>

@@ -26,12 +26,6 @@ export async function GET(_: Request, { params }: ApiProps) {
     let parcelasPagasDoInscrito = pagamentosDoInscrito
         .reduce<number[]>((acc, p) => acc.concat(p.parcelas.map(m => m.parcela)), [])
 
-    let valores = {
-        money: 0,
-        pix: 0,
-        credit_card: 0
-    }
-
     let valoresPagosDoInscrito = pagamentosDoInscrito
         .reduce((acc, p) => acc + Number.parseFloat(p.valor!), 0)
 
@@ -63,7 +57,11 @@ export async function GET(_: Request, { params }: ApiProps) {
         .filter(p => parcelasPagasDoInscrito.includes(p.parcela))
         .map(m => ({
             parcela: m.parcela,
-            valores: m.valores,
+            valores: {
+                money: 0,
+                pix: 0,
+                credit_card: 0
+            },
             paga: true
         }))
 
@@ -83,5 +81,6 @@ export async function GET(_: Request, { params }: ApiProps) {
         parcelas: parcelasRetiroPagasPeloInscrito
             .concat(parcelasZeradas)
             .concat(parcelasDoRetiroEmAbertoInscrito)
+            .sort((a, b) => a.parcela - b.parcela)
     })
 }

@@ -24,6 +24,7 @@ import { toast } from "sonner"
 import DialogTablePagamentoCamera from "./dialog-camera-pagamento"
 import DialogTableCredenciamento from "./dialog-credenciamento"
 import DialogPagamentoDinheiro from "./dialog-pagamento-dinheiro"
+import { Progress } from "../ui/progress"
 
 export const revalidate = 0
 
@@ -31,6 +32,12 @@ type Props = {
   celulas: CelulaType[]
   evento: EventoType
   inscricoes: InscritoType[]
+}
+
+const getValoresPagamentos = (inscritos: InscritoType) => {
+  return getPagamentosInscrito(inscritos)
+    .filter(p => ["paid", "CONCLUIDA"].includes(p.status!))
+    .reduce((acc, p) => acc + Number.parseFloat(p.valor!), 0)
 }
 
 const getStatusPagamento = (inscrito: InscritoType) => {
@@ -525,6 +532,9 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
               <TableHead>
                 Parcelas pagas
               </TableHead>
+              <TableHead>
+                Valores pagos
+              </TableHead>
               <TableHead className="text-right"></TableHead>
             </TableRow>
           </TableHeader>
@@ -552,7 +562,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                     {inscrito.cpf.replace(/\d{3}(\d{3})(\d{2})\d{3}/, '***.$1.$2*-**')}
                   </TableCell>
                   <TableCell>
-                    <div className="flex space-x-1">
+                    <div className="flex flex-wrap space-x-1">
                       {
                         getStatusPagamento(inscrito) == null
                           ? <Badge className="bg-gray-500">Cadastrado</Badge>
@@ -560,6 +570,9 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                             .map(([parcela, pagamento], i, a) => <div key={`${inscrito.cpf}-${parcela}`} className={`size-6 flex justify-center items-center rounded-full text-white ${a.length === 7 && a.every(([_, e]) => ["paid", "CONCLUIDA"].includes(e.status!)) ? 'bg-green-500' : ["paid", "CONCLUIDA"].includes(pagamento.status!) ? 'bg-indigo-500' : "bg-yellow-500"}`}>{parcela}ª</div>)
                       }
                     </div>
+                  </TableCell>
+                  <TableCell>
+                    {getValoresPagamentos(inscrito).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                   </TableCell>
                   <TableCell className="text-right flex space-x-2">
                     <DropdownMenu>
