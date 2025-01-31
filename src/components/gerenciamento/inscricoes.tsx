@@ -554,7 +554,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                     <div className="text-sm text-muted-foreground md:hidden lg:hidden xl:hidden">
                       {inscrito.celula || 'Convidado'}
                     </div>
-                    <div className="flex flex-wrap space-x-1 mt-2 md:hidden lg:hidden xl:hidden">
+                    <div className="flex flex-wrap gap-1 mt-2 md:hidden lg:hidden xl:hidden">
                       {
                         getStatusPagamento(inscrito) == null
                           ? <Badge className="bg-gray-500">Cadastrado</Badge>
@@ -570,7 +570,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                     {inscrito.cpf.replace(/\d{3}(\d{3})(\d{2})\d{3}/, '***.$1.$2*-**')}
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
-                    <div className="flex flex-wrap space-x-1">
+                    <div className="flex flex-wrap gap-1">
                       {
                         getStatusPagamento(inscrito) == null
                           ? <Badge className="bg-gray-500">Cadastrado</Badge>
