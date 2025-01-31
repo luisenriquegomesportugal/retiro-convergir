@@ -31,12 +31,12 @@ export default async function EventoPage({ params }: Props) {
   const eventoInscricoesResponse = await fetch(`${process.env.DOMAIN_URL}/api/eventos/${params.eventoId}/inscricoes`, { headers })
   const { inscricoes } = await eventoInscricoesResponse.json() as { inscricoes: InscritoType[] }
 
-  return <div className="flex flex-col-reverse lg:flex-row  justify-center gap-4 w-full">
+  return <div className="flex flex-col lg:flex-row  justify-center gap-4 w-full">
     <div className="flex flex-col gap-4">
       <CardTableInscricoes celulas={celulas} evento={evento} inscricoes={inscricoes} />
       <CardTableInscricoesMeta celulas={celulas} evento={evento} inscricoes={inscricoes} />
     </div>
-    <div className="flex flex-col-reverse sm:flex-row lg:flex-col gap-4 w-full md:max-w-[200px] lg:max-w-md">
+    <div className="flex flex-col sm:flex-row lg:flex-col gap-4 w-full md:max-w-[200px] lg:max-w-md">
       <PagamentoParcelasCard inscricoes={inscricoes} />
       <ValoresInscricoesDiaCard inscricoes={inscricoes} />
       <ValoresTotaisCard inscricoes={inscricoes} />
