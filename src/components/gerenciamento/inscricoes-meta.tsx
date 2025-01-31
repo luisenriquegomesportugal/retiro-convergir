@@ -416,7 +416,7 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
               <TableHead className="hidden md:table-cell">
                 Líder
               </TableHead>
-              <TableHead><abbr title="Inscrições finalizadas / Total de inscrições">Total de Inscrições (f/i)</abbr></TableHead>
+              <TableHead><abbr title="Inscrições finalizadas / Total de inscrições">Inscrições (f/i)</abbr></TableHead>
               <TableHead className="hidden md:table-cell">Meta</TableHead>
               <TableHead></TableHead>
             </TableRow>
