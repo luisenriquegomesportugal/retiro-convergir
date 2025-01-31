@@ -529,7 +529,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
               <TableHead className="hidden sm:table-cell">
                 CPF
               </TableHead>
-              <TableHead>
+              <TableHead className="hidden md:table-cell">
                 Parcelas pagas
               </TableHead>
               <TableHead>
@@ -554,6 +554,14 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                     <div className="text-sm text-muted-foreground md:hidden lg:hidden xl:hidden">
                       {inscrito.celula || 'Convidado'}
                     </div>
+                    <div className="flex flex-wrap space-x-1 mt-2 md:hidden lg:hidden xl:hidden">
+                      {
+                        getStatusPagamento(inscrito) == null
+                          ? <Badge className="bg-gray-500">Cadastrado</Badge>
+                          : Object.entries(getStatusPagamento(inscrito)!)
+                            .map(([parcela, pagamento], i, a) => <div key={`${inscrito.cpf}-${parcela}`} className={`size-6 flex justify-center items-center rounded-full text-white ${a.length === 7 && a.every(([_, e]) => ["paid", "CONCLUIDA"].includes(e.status!)) ? 'bg-green-500' : ["paid", "CONCLUIDA"].includes(pagamento.status!) ? 'bg-indigo-500' : "bg-yellow-500"}`}>{parcela}ª</div>)
+                      }
+                    </div>
                   </TableCell>
                   <TableCell className="hidden sm:table-cell" onDoubleClick={async () => {
                     await navigator.clipboard.writeText(inscrito.cpf)
@@ -561,7 +569,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                   }}>
                     {inscrito.cpf.replace(/\d{3}(\d{3})(\d{2})\d{3}/, '***.$1.$2*-**')}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden md:table-cell">
                     <div className="flex flex-wrap space-x-1">
                       {
                         getStatusPagamento(inscrito) == null

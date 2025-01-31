@@ -45,7 +45,7 @@ function getMetaStatus(evento: EventoType, celulaControle: CelulaControle) {
   }
 
   if (celulaControle.inscricoesFinalizadas < 10) {
-    return "Não chegou na Meta"
+    return "Fora da Meta"
   } else {
     const celulaId = celulaControle.celula.replaceAll(/[^\d]+/g, '')
     return evento.metaBatida?.hasOwnProperty(celulaId)
@@ -57,7 +57,7 @@ function getMetaStatus(evento: EventoType, celulaControle: CelulaControle) {
 function MetaStatus({ evento, celulaControle }: { evento: EventoType, celulaControle: CelulaControle }) {
   if (celulaControle.inscricoesFinalizadas < 10) {
     return <Badge className="text-xs text-center" variant="destructive">
-      Não chegou na Meta
+      Fora da Meta
     </Badge>
   } else {
     const celulaId = celulaControle.celula.replaceAll(/[^\d]+/g, '')
@@ -373,16 +373,16 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
                         Chegou na meta
                       </CommandItem>
                       <CommandItem className="cursor-pointer" onSelect={() => {
-                        handleOnFilterClick(setSituacao, "Não chegou na Meta")
+                        handleOnFilterClick(setSituacao, "Fora da Meta")
                         setPage(1)
                       }}>
                         <Check
                           className={cn(
                             "mr-2 h-4 w-4",
-                            situacao?.includes("Não chegou na Meta") ? "opacity-100" : "opacity-0"
+                            situacao?.includes("Fora da Meta") ? "opacity-100" : "opacity-0"
                           )}
                         />
-                        Não chegou na Meta
+                        Fora da Meta
                       </CommandItem>
                     </CommandGroup>
                   </CommandList>
@@ -417,7 +417,7 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
                 Líder
               </TableHead>
               <TableHead><abbr title="Inscrições finalizadas / Total de inscrições">Total de Inscrições (f/i)</abbr></TableHead>
-              <TableHead>Meta</TableHead>
+              <TableHead className="hidden md:table-cell">Meta</TableHead>
               <TableHead></TableHead>
             </TableRow>
           </TableHeader>
@@ -434,14 +434,20 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
                     <div className="text-sm text-muted-foreground md:hidden lg:hidden xl:hidden">
                       {celulaFiltrada.lider}
                     </div>
+                    {
+                      celulaFiltrada.celula != 'Convidado'
+                      && <div className="md:hidden lg:hidden xl:hidden mt-2">
+                        <MetaStatus evento={evento} celulaControle={celulaFiltrada} />
+                      </div>
+                    }
                   </TableCell>
                   <TableCell className="hidden md:table-cell">
                     {celulaFiltrada.lider || '-'}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-center">
                     {celulaFiltrada.inscricoesFinalizadas}/{celulaFiltrada.inscricoes}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="hidden md:table-cell">
                     {
                       celulaFiltrada.celula != 'Convidado'
                       && <MetaStatus evento={evento} celulaControle={celulaFiltrada} />
