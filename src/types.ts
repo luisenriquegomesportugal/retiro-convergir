@@ -51,7 +51,13 @@ export type Pagamento = {
 
 export type EventoPagamentosType = {
   parcela: number
-  valores: {[key: string]: number}
+  dataLimite?: string
+  paga?: boolean
+  valores: {
+    money: number
+    pix: number
+    credit_card: number
+}
 }
 
 export type EventoType = {
