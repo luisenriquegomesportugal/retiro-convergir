@@ -5,6 +5,7 @@ import { CartesianGrid, Label, Line, LineChart, PolarGrid, PolarRadiusAxis, Radi
 import {
     Card,
     CardContent,
+    CardDescription,
     CardHeader,
     CardTitle
 } from "@/components/ui/card"
@@ -40,6 +41,7 @@ export function ValoresTotaisCard({ inscricoes }: Props) {
         <Card className="w-full">
             <CardHeader>
                 <CardTitle>Valores totais</CardTitle>
+                <CardDescription>{formatCurrency(valoresPagos)}</CardDescription>
             </CardHeader>
             <CardContent className="pt-0">
                 <ChartContainer
