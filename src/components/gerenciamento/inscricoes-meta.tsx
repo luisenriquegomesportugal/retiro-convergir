@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Pagination, PaginationContent, PaginationItem } from "@/components/ui/pagination"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { cn } from "@/lib/utils"
+import { cn, getPagamentosInscrito } from "@/lib/utils"
 import { CelulaType, EventoType, InscritoType } from "@/types"
 import { Check, ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight, Copy, Loader2, Search, Tag, User, Users } from "lucide-react"
 import { parseAsArrayOf, parseAsInteger, parseAsString, useQueryState } from "nuqs"
@@ -37,6 +37,12 @@ type CelulaControle = {
   lider?: string,
   inscricoes: number,
   inscricoesFinalizadas: number
+}
+
+const getValoresPagamentos = (inscritos: InscritoType) => {
+  return getPagamentosInscrito(inscritos)
+    .filter(p => ["paid", "CONCLUIDA"].includes(p.status!))
+    .reduce((acc, p) => acc + Number.parseFloat(p.valor!), 0)
 }
 
 function getMetaStatus(evento: EventoType, celulaControle: CelulaControle) {
@@ -111,11 +117,8 @@ export default function CardTableInscricoesMeta({ celulas, evento, inscricoes }:
     inscricoesControle[i.celula || "Convidado"].inscricoes += 1
 
     if (!!i.pagamentos) {
-      let pagamentos = Object.values(i.pagamentos)
-        .filter(p => ["CONCLUIDA", "paid"].includes(p.status!))
-        .reduce<number[]>((a, p) => a.concat(p.parcelas.map(pa => pa.parcela)), [])
-
-      inscricoesControle[i.celula || "Convidado"].inscricoesFinalizadas += pagamentos.length == 7 ? 1 : 0
+      let pagamentos = getValoresPagamentos(i)
+      inscricoesControle[i.celula || "Convidado"].inscricoesFinalizadas += pagamentos >= 507 ? 1 : 0
     }
   })
 

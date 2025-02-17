@@ -559,7 +559,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                         getStatusPagamento(inscrito) == null
                           ? <Badge className="bg-gray-500">Cadastrado</Badge>
                           : Object.entries(getStatusPagamento(inscrito)!)
-                            .map(([parcela, pagamento], i, a) => <div key={`${inscrito.cpf}-${parcela}`} className={`size-6 flex justify-center items-center rounded-full text-white ${a.length === 7 && a.every(([_, e]) => ["paid", "CONCLUIDA"].includes(e.status!)) ? 'bg-green-500' : ["paid", "CONCLUIDA"].includes(pagamento.status!) ? 'bg-indigo-500' : "bg-yellow-500"}`}>{parcela}ª</div>)
+                            .map(([parcela, pagamento], i, a) => <div key={`${inscrito.cpf}-${parcela}`} className={`size-6 flex justify-center items-center rounded-full text-white ${getValoresPagamentos(inscrito) >= 507 ? 'bg-green-500' : ["paid", "CONCLUIDA"].includes(pagamento.status!) ? 'bg-indigo-500' : "bg-yellow-500"}`}>{parcela}ª</div>)
                       }
                     </div>
                   </TableCell>
@@ -575,7 +575,7 @@ export default function CardTableInscricoes({ celulas, evento, inscricoes }: Pro
                         getStatusPagamento(inscrito) == null
                           ? <Badge className="bg-gray-500">Cadastrado</Badge>
                           : Object.entries(getStatusPagamento(inscrito)!)
-                            .map(([parcela, pagamento], i, a) => <div key={`${inscrito.cpf}-${parcela}`} className={`size-6 flex justify-center items-center rounded-full text-white ${a.length === 7 && a.every(([_, e]) => ["paid", "CONCLUIDA"].includes(e.status!)) ? 'bg-green-500' : ["paid", "CONCLUIDA"].includes(pagamento.status!) ? 'bg-indigo-500' : "bg-yellow-500"}`}>{parcela}ª</div>)
+                            .map(([parcela, pagamento], i, a) => <div key={`${inscrito.cpf}-${parcela}`} className={`size-6 flex justify-center items-center rounded-full text-white ${getValoresPagamentos(inscrito) >= 507 ? 'bg-green-500' : ["paid", "CONCLUIDA"].includes(pagamento.status!) ? 'bg-indigo-500' : "bg-yellow-500"}`}>{parcela}ª</div>)
                       }
                     </div>
                   </TableCell>
