@@ -83,6 +83,8 @@ const handleOnFilterClick = (setFn: any, value: string) => {
 }
 
 export default function CardTableInscricoes({ celulas, evento, inscricoes }: Props) {
+  console.log(inscricoes)
+  
   const [page, setPage] = useQueryState("fip", parseAsInteger.withDefault(1))
   const [filterGlobal, setFilterGlobal] = useQueryState("fif")
   const [rede, setRede] = useQueryState("fir", parseAsArrayOf(parseAsString))
