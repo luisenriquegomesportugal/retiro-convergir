@@ -5,6 +5,8 @@ import Fechada from "@/components/fechada"
 import FinalizacaoMoney from "@/components/steps/finalizacao-money"
 import Finalizacao from "@/components/steps/finalizacao-money"
 import Formulario from "@/components/steps/formulario"
+import InscricoesFechadas from "@/components/steps/inscricoes-fechadas"
+import InscricoesFinalizadas from "@/components/steps/inscricoes-finalizadas"
 import Pagamentos from "@/components/steps/pagamento"
 import Parcelas from "@/components/steps/parcelas"
 import Termos from "@/components/steps/termos"
@@ -48,7 +50,7 @@ export default function LoginForm() {
         return <Carregando />
     }
 
-    if (!evento || !evento.inscricoesAbertas) {
+    if (!evento) {
         return <Fechada />
     }
 
@@ -65,6 +67,8 @@ export default function LoginForm() {
                 || step === Steps.PAGAMENTO && <Pagamentos evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
                 || step === Steps.FINALIZACAO && <Finalizacao evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
                 || step === Steps.FINALIZACAO_MONEY && <FinalizacaoMoney evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
+                || step === Steps.INSCRICOES_FECHADAS && <InscricoesFechadas evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
+                || step === Steps.INSCRICOES_CONFIRMADA && <InscricoesFinalizadas evento={evento} step={step} inscrito={inscrito} setStep={setStep} setInscrito={setInscrito} reset={reset} />
             }
         </div>
     </div>

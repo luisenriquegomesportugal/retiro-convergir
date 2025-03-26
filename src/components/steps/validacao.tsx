@@ -17,6 +17,14 @@ import { z } from "zod"
 import { Form, FormControl, FormField, FormItem, FormMessage } from "../ui/form"
 import { Check } from "lucide-react"
 import { useState } from "react"
+import e from "cors"
+import { getPagamentosInscrito } from "@/lib/utils"
+
+const getValoresPagamentos = (inscritos: InscritoType) => {
+    return getPagamentosInscrito(inscritos)
+        .filter(p => ["paid", "CONCLUIDA"].includes(p.status!))
+        .reduce((acc, p) => acc + Number.parseFloat(p.valor!), 0)
+}
 
 const FormSchema = z
     .object({
@@ -29,7 +37,7 @@ const FormSchema = z
             .refine(data => cpfValidation.isValid(data), "CPF inválido (digite somente os 11 números)"),
     })
 
-export default function Formulario({ setStep, inscrito, setInscrito }: StepProps) {
+export default function Formulario({ setStep, inscrito, setInscrito, evento }: StepProps) {
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: { cpf: "" }
@@ -42,13 +50,20 @@ export default function Formulario({ setStep, inscrito, setInscrito }: StepProps
             const { inscrito } = await response.json() as { inscrito: InscritoType }
 
             setInscrito(inscrito)
-            
+
             if (inscrito?.novo) {
-                setStep(Steps.FORMULARIO)
-            } else if (inscrito?.finalizada) {
-                setStep(Steps.FINALIZACAO)
+                if (evento?.inscricoesAbertas) {
+                    setStep(Steps.FORMULARIO)
+                } else {
+                    setStep(Steps.INSCRICOES_FECHADAS)
+                }
             } else {
-                setStep(Steps.TERMOS)
+                let valoresInscrito = getValoresPagamentos(inscrito)
+                if (valoresInscrito >= 507) {
+                    setStep(Steps.INSCRICOES_CONFIRMADA)
+                } else {
+                    setStep(Steps.TERMOS)
+                }
             }
 
             return true
@@ -83,7 +98,7 @@ export default function Formulario({ setStep, inscrito, setInscrito }: StepProps
                 </CardContent>
                 <CardFooter>
                     <Button
-                        type="submit"                        
+                        type="submit"
                         icon={<Check className="size-4 mr-2" />}
                         disabled={form.formState.isSubmitting}
                         className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">

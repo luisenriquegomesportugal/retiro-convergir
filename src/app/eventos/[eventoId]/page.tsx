@@ -33,11 +33,11 @@ export default async function EventoPage({ params }: Props) {
 
   return <div className="flex flex-col lg:flex-row  justify-center gap-4 w-full">
     <div className="flex flex-col gap-4">
-      <CardTableInscricoes celulas={celulas} evento={evento} inscricoes={inscricoes} />
-      <CardTableInscricoesMeta celulas={celulas} evento={evento} inscricoes={inscricoes} />
+      <CardTableInscricoes celulas={celulas} evento={evento} inscricoes={inscricoes.filter(i => !i.desativado)} />
+      <CardTableInscricoesMeta celulas={celulas} evento={evento} inscricoes={inscricoes.filter(i => !i.desativado)} />
     </div>
     <div className="flex flex-col sm:flex-row lg:flex-col gap-4 w-full md:max-w-[200px] lg:max-w-md">
-      <PagamentoParcelasCard inscricoes={inscricoes} />
+      <PagamentoParcelasCard inscricoes={inscricoes.filter(i => !i.desativado)} />
       <ValoresInscricoesDiaCard inscricoes={inscricoes} />
       {/* <ValoresTotaisCard inscricoes={inscricoes} /> */}
     </div>

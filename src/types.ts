@@ -22,6 +22,7 @@ export type InscritoType = {
   termos?: boolean
   pagamento?: {[txid: string]: Pagamento}
   credenciamento?: Credenciamento
+  desativado?: boolean
 }
 
 export const Steps = {
@@ -31,7 +32,9 @@ export const Steps = {
   "PARCELAS": 4,
   "PAGAMENTO": 5,
   "FINALIZACAO": 6,
-  "FINALIZACAO_MONEY": 7
+  "FINALIZACAO_MONEY": 7,
+  "INSCRICOES_FECHADAS": 8,
+  "INSCRICOES_CONFIRMADA": 9
 }
 
 export type Pagamento = {

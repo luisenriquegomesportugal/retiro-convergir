@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card"
 import { CalendarClock, CheckCircle, Plus } from "lucide-react"
 
-export default function FinalizacaoMoney({ inscrito, reset }: StepProps) {
+export default function FinalizacaoMoney({ inscrito, reset, evento }: StepProps) {
     return <Card className="w-full max-w-sm">
         <CardHeader>
             <div className="flex flex-row space-x-4">
@@ -25,13 +25,13 @@ export default function FinalizacaoMoney({ inscrito, reset }: StepProps) {
             <p>Olá {inscrito?.nome?.split(' ').shift()}, seu agendamento de pagamento foi processado com sucesso, <b>fique atento junto de sua liderança para o dia da realização do pagamento em espécie para concluir o pagamento de sua parcela.</b></p>
             <p>A cada dia que passa estamos mais ansiosos para viver tudo o que Deus tem preparado para o <b>Retiro Convergir 2025</b>.</p>
         </CardContent>
-        <CardFooter className="flex flex-col gap-4">
+        {evento?.inscricoesAbertas && <CardFooter className="flex flex-col gap-4">
             <Button
                 icon={<Plus className="size-4 mr-2" />}
                 onClick={reset}
                 className="w-full bg-[#fdaf00] hover:bg-[#feef00] text-black">
                 Nova Inscrição
             </Button>
-        </CardFooter>
+        </CardFooter>}
     </Card>
 }
