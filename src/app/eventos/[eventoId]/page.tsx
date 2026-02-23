@@ -39,7 +39,7 @@ export default async function EventoPage({ params }: Props) {
     <div className="flex flex-col sm:flex-row lg:flex-col gap-4 w-full md:max-w-[200px] lg:max-w-md">
       <PagamentoParcelasCard inscricoes={inscricoes.filter(i => !i.desativado)} />
       <ValoresInscricoesDiaCard inscricoes={inscricoes} />
-      {/* <ValoresTotaisCard inscricoes={inscricoes} /> */}
+      <ValoresTotaisCard inscricoes={inscricoes} />
     </div>
   </div>
 }
