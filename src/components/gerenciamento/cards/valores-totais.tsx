@@ -19,7 +19,7 @@ type Props = {
 }
 
 export function ValoresTotaisCard({ inscricoes }: Props) {
-    let valoresTotais = inscricoes.length * 507
+    let valoresTotais = inscricoes.length * 360
     let valoresPagos = 0
     let chartData: { [data: string]: number } = {}
 
